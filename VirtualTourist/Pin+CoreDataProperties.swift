@@ -2,7 +2,7 @@
 //  Pin+CoreDataProperties.swift
 //  VirtualTourist
 //
-//  Created by Chris Leung on 5/10/17.
+//  Created by Chris Leung on 5/11/17.
 //  Copyright © 2017 Chris Leung. All rights reserved.
 //
 
@@ -16,8 +16,10 @@ extension Pin {
         return NSFetchRequest<Pin>(entityName: "Pin")
     }
 
-    @NSManaged public var longitude: Double
     @NSManaged public var latitude: Double
+    @NSManaged public var longitude: Double
+    @NSManaged public var photosPageNum: Int16
+    @NSManaged public var photosTotalPages: Int16
     @NSManaged public var photo: NSSet?
 
 }
