@@ -11,7 +11,7 @@ import CoreData
 
 class VTModel {
     
-    func createNewPin(lat:Double, long:Double, completionHandler: @escaping (_ error: String?) -> Void) {
+    func createNewPin(lat:Double, long:Double, completionHandler: @escaping (_ error: String?, _ pin: Pin?) -> Void) {
         // Get the stack
         let delegate = UIApplication.shared.delegate as! AppDelegate
         let stack = delegate.stack
@@ -22,12 +22,15 @@ class VTModel {
         // Save the pin
         stack.save()
         
+        // Send the pin to the completion handler
+        completionHandler(nil,newPin)
+        
         // Get photo URLs from the network client class
         VTNetClient.sharedInstance().getPhotoURLs(lat: lat, long: long, pageNumber: 1) { (error,photoURLs) in
             
             // If there was an error, pass the message to the controller
             guard error == nil else {
-                completionHandler(error)
+                completionHandler(error,nil)
                 return
             }
 
@@ -72,6 +75,51 @@ class VTModel {
         } else {
             return nil
         }
+    }
+    
+    func getFRCAndLoadImagesFor(_ pin: Pin) -> NSFetchedResultsController<NSFetchRequestResult> {
+        
+        // Get the stack
+        let delegate = UIApplication.shared.delegate as! AppDelegate
+        let stack = delegate.stack
+        
+        // Create Fetch Request
+        let fr = NSFetchRequest<NSFetchRequestResult>(entityName: "Photo")
+        
+        fr.sortDescriptors = [NSSortDescriptor(key: "url", ascending: false)]
+        
+        let pred = NSPredicate(format: "pin = %@", argumentArray: [pin])
+        fr.predicate = pred
+        
+        // Create FetchedResultsController
+        let frc = NSFetchedResultsController(fetchRequest: fr, managedObjectContext:stack.context, sectionNameKeyPath: nil, cacheName: nil)
+        
+        do {
+            try frc.performFetch()
+        } catch let e as NSError {
+            print("Error while trying to perform a search: \n\(e)\n\(frc)")
+        }
+
+        let photos = frc.fetchedObjects as! [Photo]
+
+        stack.performBackgroundBatchOperation { (context) in
+            for photo in photos {
+                if photo.imageData == nil {
+                    let imageURL = URL(string: photo.url!)
+                    if let imageData = try? Data(contentsOf: imageURL!) {
+                        print("Downloaded image successfully")
+                        photo.imageData = imageData as NSData
+                    } else {
+                        print("Image does not exist at \(imageURL)")
+                    }
+                } else {
+                    print("Image already in persistence")
+                }
+            }
+        }
+
+        // Return the FetchedResultsController
+        return frc
     }
     
     // MARK: Shared Instance
