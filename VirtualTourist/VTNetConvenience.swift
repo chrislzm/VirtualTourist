@@ -14,7 +14,7 @@ import UIKit
 extension VTNetClient {
     
     // Returns a list of Flickr photo URLs from this latitude and longitude, returning page 1 of results unless otherwise specified
-    func getPhotoURLs(lat:Double, long:Double, pageNumber:Int, completionHandler: @escaping (_ error: String?, _ photoURLs:[String]?) -> Void) {
+    func getPhotoURLs(lat:Double, long:Double, pageNumber:Int, completionHandler: @escaping (_ error: String?, _ photoURLs:[String]?, _ totalPages:Int?) -> Void) {
         
         /* 1. Set up parameters for Flickr REST API Method Call */
         let methodParameters = [
@@ -34,31 +34,38 @@ extension VTNetClient {
             
             /* 2. Check for error response */
             if let httpError = httpError {
-                completionHandler(self.getUserFriendlyErrorMessageFor(httpError),nil)
+                completionHandler(self.getUserFriendlyErrorMessageFor(httpError),nil,nil)
                 return
             }
             
             /* 3. Verify we received a reponse dictionary */
             guard let response = results as? [String:AnyObject] else {
-                completionHandler("Error creating session",nil)
+                completionHandler("Error creating session",nil,nil)
                 return
             }
             
             /* 4: Verify Flickr status is ok */
             guard let stat = response[FlickrResponseKeys.Status] as? String, stat == FlickrResponseValues.OKStatus else {
-                completionHandler("Flickr API returned an error. See error code and message in \(response)",nil)
+                completionHandler("Flickr API returned an error. See error code and message in \(response)",nil,nil)
                 return
             }
             
             /* 5: Verify "photos" key is in our result */
             guard let photosDictionary = response[FlickrResponseKeys.Photos] as? [String:AnyObject] else {
-                completionHandler("Cannot find keys '\(FlickrResponseKeys.Photos)' in \(response)",nil)
+                completionHandler("Cannot find keys '\(FlickrResponseKeys.Photos)' in \(response)",nil,nil)
                 return
             }
             
-            /* 6: Verify "photo" key is in photosDictionary */
+            /* 6: Verify "pages" key is in photosDictionary */
+            guard let pages = photosDictionary[FlickrResponseKeys.Pages] as? Int else {
+                completionHandler("Cannot find key '\(FlickrResponseKeys.Pages)' in \(photosDictionary)",nil,nil)
+                return
+            }
+            print("Pages: \(pages)")
+            
+            /* 7: Verify "photo" key is in photosDictionary */
             guard let photosArray = photosDictionary[FlickrResponseKeys.Photo] as? [[String: AnyObject]] else {
-                completionHandler("Cannot find key '\(FlickrResponseKeys.Photo)' in \(photosDictionary)",nil)
+                completionHandler("Cannot find key '\(FlickrResponseKeys.Photo)' in \(photosDictionary)",nil,nil)
                 return
             }
             
@@ -66,17 +73,17 @@ extension VTNetClient {
             
             for photo in photosArray {
                 
-                /* 7: Does our photo have a key for the small image URL? */
+                /* 8: Does our photo have a key for the small image URL? */
                 guard let photoURLString = photo[FlickrResponseKeys.SmallURL] as? String else {
-                    completionHandler("Cannot find key '\(FlickrResponseKeys.SmallURL)' in \(photo)",nil)
+                    completionHandler("Cannot find key '\(FlickrResponseKeys.SmallURL)' in \(photo)",nil,nil)
                     return
                 }
                 
                 photoURLs.append(photoURLString)
             }
             
-            /* 8: Success! Return the photo URLs to the completion handler */
-            completionHandler(nil,photoURLs)
+            /* 9: Success! Return the photo URLs to the completion handler */
+            completionHandler(nil,photoURLs,pages)
         }
     }
 
