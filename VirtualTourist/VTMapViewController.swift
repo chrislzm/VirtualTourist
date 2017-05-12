@@ -14,6 +14,7 @@ class VTMapViewController: UIViewController, MKMapViewDelegate {
 
     // MARK: Properties
     var fetchedResultsController : NSFetchedResultsController<NSFetchRequestResult>?
+    var coordinateToShow:CLLocationCoordinate2D?
     
     // MARK: Outlets
     @IBOutlet weak var mapView: MKMapView!
@@ -55,9 +56,18 @@ class VTMapViewController: UIViewController, MKMapViewDelegate {
         }
     }
     
-    // Delegate method that respond to taps. Opens the system browser to the URL specified in the annotationViews subtitle property.
+    // Delegate method that respond to taps on pins
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
-        print ("User tapped on annotation view")
+        
+        // Save the collection coordinate
+        coordinateToShow = view.annotation?.coordinate
+        performSegue(withIdentifier: "showPinCollection", sender: self)
+    }
+    
+    // Send the collection coordinate over
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let controller = segue.destination as! VTCollectionViewController
+        controller.coordinate = coordinateToShow
     }
     
     // MARK: Helper methods
