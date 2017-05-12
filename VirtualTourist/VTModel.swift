@@ -18,6 +18,9 @@ class VTModel {
         // Create new pin
         let newPin = Pin(lat: lat,long: long,context: stack.context)
         
+        // Save the pin
+        stack.save()
+        
         // Get photo URLs from the network client class
         VTNetClient.sharedInstance().getPhotoURLs(lat: lat, long: long, pageNumber: 1) { (error,photoURLs) in
             
@@ -33,6 +36,9 @@ class VTModel {
                 newPhoto.pin = newPin
                 print("Added photoURL into Pin! \(photoURL)")
             }
+            
+            // Save the URLs
+            stack.save()
         }
     }
     
