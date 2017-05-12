@@ -42,7 +42,7 @@
                     <navigationItem key="navigationItem" title="Virtual Tourist" id="IaC-yC-f70"/>
                     <connections>
                         <outlet property="mapView" destination="mcP-3v-jvC" id="Saf-em-rco"/>
-                        <segue destination="keC-km-QxW" kind="show" identifier="showPhotos" id="VbW-Z0-cah"/>
+                        <segue destination="keC-km-QxW" kind="show" identifier="showPinCollection" id="VbW-Z0-cah"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -54,10 +54,10 @@
             </objects>
             <point key="canvasLocation" x="472.80000000000001" y="169.56521739130437"/>
         </scene>
-        <!--View Controller-->
+        <!--Collection View Controller-->
         <scene sceneID="uGh-na-eHV">
             <objects>
-                <viewController storyboardIdentifier="VTCollectionViewController" id="keC-km-QxW" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="VTCollectionViewController" id="keC-km-QxW" customClass="VTCollectionViewController" customModule="VirtualTourist" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="ClN-pq-v9f"/>
                         <viewControllerLayoutGuide type="bottom" id="wnP-CN-Opb"/>

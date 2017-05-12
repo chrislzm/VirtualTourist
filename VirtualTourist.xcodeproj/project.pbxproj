@@ -22,6 +22,7 @@
 		A5F1A1401EC541CF00A67848 /* VTNetClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F1A13D1EC541CF00A67848 /* VTNetClient.swift */; };
 		A5F1A1411EC541CF00A67848 /* VTNetConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F1A13E1EC541CF00A67848 /* VTNetConstants.swift */; };
 		A5F1A1421EC541CF00A67848 /* VTNetConvenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F1A13F1EC541CF00A67848 /* VTNetConvenience.swift */; };
+		A5F1A1441EC568AF00A67848 /* VTCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F1A1431EC568AF00A67848 /* VTCollectionViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,6 +43,7 @@
 		A5F1A13D1EC541CF00A67848 /* VTNetClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VTNetClient.swift; path = VirtualTourist/VTNetClient.swift; sourceTree = "<group>"; };
 		A5F1A13E1EC541CF00A67848 /* VTNetConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VTNetConstants.swift; path = VirtualTourist/VTNetConstants.swift; sourceTree = "<group>"; };
 		A5F1A13F1EC541CF00A67848 /* VTNetConvenience.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VTNetConvenience.swift; path = VirtualTourist/VTNetConvenience.swift; sourceTree = "<group>"; };
+		A5F1A1431EC568AF00A67848 /* VTCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VTCollectionViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,6 +79,7 @@
 			isa = PBXGroup;
 			children = (
 				A5E7BDC21EC4308B00C62CE0 /* VTMapViewController.swift */,
+				A5F1A1431EC568AF00A67848 /* VTCollectionViewController.swift */,
 			);
 			name = Controller;
 			path = VirtualTourist;
@@ -192,6 +195,7 @@
 				A5F1A1401EC541CF00A67848 /* VTNetClient.swift in Sources */,
 				A5F1A1351EC522AE00A67848 /* Pin+CoreDataClass.swift in Sources */,
 				A5F1A1421EC541CF00A67848 /* VTNetConvenience.swift in Sources */,
+				A5F1A1441EC568AF00A67848 /* VTCollectionViewController.swift in Sources */,
 				A5F1A1341EC522AE00A67848 /* Photo+CoreDataProperties.swift in Sources */,
 				A5E7BDD41EC4374C00C62CE0 /* Model.xcdatamodeld in Sources */,
 				A5F1A1381EC5393D00A67848 /* CoreDataStack.swift in Sources */,
