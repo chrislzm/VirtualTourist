@@ -6,10 +6,19 @@
 //  Copyright © 2017 Chris Leung. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 class VTModel {
+    
     func createNewPin(lat:Double, long:Double) {
+        // Get the stack
+        let delegate = UIApplication.shared.delegate as! AppDelegate
+        let stack = delegate.stack
+        
+        // Create new pin
+        let newPin = Pin(lat: lat,long: long,context: stack.context)
+        
+        // Get photos and add them in the background context
         
     }
 }
