@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 
 class VTModel {
     
@@ -46,6 +47,30 @@ class VTModel {
                 // TODO: Remove debug statement, do we need to do something if there are no photos?
                 print("No photos in this area")
             }
+        }
+    }
+    
+    func getSavedPins() -> [Pin]? {
+        
+        // Get the stack
+        let delegate = UIApplication.shared.delegate as! AppDelegate
+        let stack = delegate.stack
+        
+        // Create a fetchrequest
+        let fr = NSFetchRequest<NSFetchRequestResult>(entityName: "Pin")
+        
+        // Execute the request
+        var results:[Any]?
+        do {
+            results = try stack.context.fetch(fr)
+        } catch {
+            fatalError("Error retrieving saved pins")
+        }
+        
+        if let savedPins = results as? [Pin] {
+            return savedPins
+        } else {
+            return nil
         }
     }
     

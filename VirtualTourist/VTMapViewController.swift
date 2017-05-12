@@ -20,24 +20,9 @@ class VTMapViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // Get the stack
-        let delegate = UIApplication.shared.delegate as! AppDelegate
-        let stack = delegate.stack
-        
-        // Create a fetchrequest
-        let fr = NSFetchRequest<NSFetchRequestResult>(entityName: "Pin")
-        
-        // Execute the request
-        var results:[Any]?
-        do {
-            results = try stack.context.fetch(fr)
-        } catch {
-            fatalError("Error retrieving saved pins")
-        }
 
         // If we have saved pins
-        if let savedPins = results as? [Pin] {
+        if let savedPins = VTModel.sharedInstance().getSavedPins() {
             
             // Add them to our MapView
             var annotations = [MKPointAnnotation]()
