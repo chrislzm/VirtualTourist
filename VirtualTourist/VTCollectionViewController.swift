@@ -9,5 +9,6 @@
 import UIKit
 
 class VTCollectionViewController : UIViewController {
-    
+    var latitude:Double?
+    var longitude:Double?
 }
