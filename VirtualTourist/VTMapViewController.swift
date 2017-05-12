@@ -8,14 +8,48 @@
 
 import UIKit
 import MapKit
+import CoreData
 
 class VTMapViewController: UIViewController {
 
+    // MARK: Properties
+    var fetchedResultsController : NSFetchedResultsController<NSFetchRequestResult>?
+    
+    // MARK: Outlets
     @IBOutlet weak var mapView: MKMapView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        
+        // Get the stack
+        let delegate = UIApplication.shared.delegate as! AppDelegate
+        let stack = delegate.stack
+        
+        // Create a fetchrequest
+        let fr = NSFetchRequest<NSFetchRequestResult>(entityName: "Pin")
+        
+        // Execute the request
+        var results:[Any]?
+        do {
+            results = try stack.context.fetch(fr)
+        } catch {
+            fatalError("Error retrieving saved pins")
+        }
+
+        // If we have saved pins
+        if let savedPins = results as? [Pin] {
+            
+            // Add them to our MapView
+            var annotations = [MKPointAnnotation]()
+            
+            for savedPin in savedPins {
+                let annotation = MKPointAnnotation()
+                let coordinate = CLLocationCoordinate2D(latitude: savedPin.latitude, longitude: savedPin.longitude)
+                annotation.coordinate = coordinate
+                annotations.append(annotation)
+            }
+            mapView.addAnnotations(annotations)
+        }
     }
 
     override func didReceiveMemoryWarning() {
