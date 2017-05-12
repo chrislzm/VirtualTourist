@@ -15,6 +15,7 @@ class VTCollectionViewController : UIViewController,UICollectionViewDelegate,UIC
     // MARK: Properties
     var pin:Pin?
     var fetchedResultsController : NSFetchedResultsController<NSFetchRequestResult>?
+    var blockOperations: [BlockOperation] = []
     
     // MARK: Properties for flow layout
     private let cellsPerRow:CGFloat = 3.0
@@ -27,6 +28,37 @@ class VTCollectionViewController : UIViewController,UICollectionViewDelegate,UIC
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var flowLayout: UICollectionViewFlowLayout!
     @IBOutlet weak var collectionView: UICollectionView!
+    
+    // MARK: Actions
+    @IBAction func getNewPhotos(_ sender: Any) {
+
+        print("1. Deleting all photos")
+        // 1. Delete all photos
+        if let photos = fetchedResultsController?.fetchedObjects as? [Photo] {
+            let context = fetchedResultsController?.managedObjectContext
+            for photo in photos {
+                context?.delete(photo)
+            }
+            do {
+                try context?.save()
+            } catch {
+                fatalError("Unable to delete photos")
+            }
+        }
+        
+        print("2. Loading new photo URLs")
+        // 2. Load new photo URLs
+        VTModel.sharedInstance().loadNewPhotoURLsFor(pin!) { (error) in
+            guard error == nil else {
+                self.displayAlertWithOKButton("Error loading new photo URLs", error!)
+                return
+            }
+            
+            print("3. Loading new images")
+            // 3. Load images
+            VTModel.sharedInstance().loadImagesFor(self.fetchedResultsController!)
+        }
+    }
     
     // MARK: Lifecycle
     
@@ -45,9 +77,11 @@ class VTCollectionViewController : UIViewController,UICollectionViewDelegate,UIC
         
         // Create Fetch Request Controller for this Pin by calling the model with the coordinates, it should return FRC to us, then we should use that to display everything...
         
-        fetchedResultsController = VTModel.sharedInstance().getFRCAndLoadImagesFor(pin!)
+        fetchedResultsController = VTModel.sharedInstance().getFrcFor(pin!)
         
         fetchedResultsController?.delegate = self
+        
+        VTModel.sharedInstance().loadImagesFor(fetchedResultsController!)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -87,6 +121,7 @@ class VTCollectionViewController : UIViewController,UICollectionViewDelegate,UIC
             cell.photo.image = UIImage(data: binaryPhoto as Data)
             cell.stopLoadingAnimation()
         } else {
+            cell.photo.image = nil
             cell.startLoadingAnimation()
         }
         
@@ -123,6 +158,7 @@ extension VTCollectionViewController: NSFetchedResultsControllerDelegate {
     
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         print("Collection view content will change")
+        blockOperations.removeAll(keepingCapacity: false)
     }
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
@@ -131,31 +167,84 @@ extension VTCollectionViewController: NSFetchedResultsControllerDelegate {
         
         switch (type) {
         case .insert:
-            collectionView?.insertSections(set)
+            blockOperations.append(
+                BlockOperation(block: { [weak self] in
+                    if let this = self {
+                        this.collectionView!.insertSections(set)
+                    }
+                })
+            )
         case .delete:
-            collectionView?.deleteSections(set)
+            blockOperations.append(
+                BlockOperation(block: { [weak self] in
+                    if let this = self {
+                        this.collectionView!.deleteSections(set)
+                    }
+                })
+            )
+        case .update:
+            blockOperations.append(
+                BlockOperation(block: { [weak self] in
+                    if let this = self {
+                        this.collectionView!.reloadSections(set)
+                    }
+                })
+            )
         default:
-            // irrelevant in our case
             break
         }
     }
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
-        print("Collection view cell(s) - modifying")
+        print("Collection view cell(s) - modifying - Type: \(type)")
         switch(type) {
         case .insert:
-            collectionView?.insertItems(at: [newIndexPath!])
+            print("Inserting")
+            blockOperations.append(
+                BlockOperation(block: { [weak self] in
+                    if let this = self {
+                        this.collectionView!.insertItems(at: [newIndexPath!])
+                    }
+                })
+            )
         case .delete:
-            collectionView?.deleteItems(at: [indexPath!])
+            print("Deleting")
+            blockOperations.append(
+                BlockOperation(block: { [weak self] in
+                    if let this = self {
+                        this.collectionView!.deleteItems(at: [indexPath!])
+                    }
+                })
+            )
         case .update:
-            collectionView?.reloadItems(at: [indexPath!])
+            print("Updating")
+            blockOperations.append(
+                BlockOperation(block: { [weak self] in
+                    if let this = self {
+                        this.collectionView!.reloadItems(at: [indexPath!])
+                    }
+                })
+            )
         case .move:
-            collectionView?.deleteItems(at: [indexPath!])
-            collectionView?.insertItems(at: [newIndexPath!])
+            print("Moving")
+            blockOperations.append(
+                BlockOperation(block: { [weak self] in
+                    if let this = self {
+                        this.collectionView!.moveItem(at: indexPath!, to: newIndexPath!)
+                    }
+                })
+            )
         }
     }
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         print("Collection view content did change")
+        collectionView!.performBatchUpdates({ () -> Void in
+            for operation: BlockOperation in self.blockOperations {
+                operation.start()
+            }
+        }, completion: { (finished) -> Void in
+            self.blockOperations.removeAll(keepingCapacity: false)
+        })
     }
 }
