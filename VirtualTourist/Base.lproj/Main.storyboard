@@ -6,6 +6,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12088"/>
+        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -40,6 +41,7 @@
                     <navigationItem key="navigationItem" title="Virtual Tourist" id="IaC-yC-f70"/>
                     <connections>
                         <outlet property="mapView" destination="mcP-3v-jvC" id="Saf-em-rco"/>
+                        <segue destination="keC-km-QxW" kind="show" identifier="showPhotos" id="VbW-Z0-cah"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -50,6 +52,59 @@
                 </pongPressGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="472.80000000000001" y="169.56521739130437"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="uGh-na-eHV">
+            <objects>
+                <viewController storyboardIdentifier="VTCollectionViewController" id="keC-km-QxW" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="ClN-pq-v9f"/>
+                        <viewControllerLayoutGuide type="bottom" id="wnP-CN-Opb"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="uqc-DS-G3P">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="5FR-Gs-SYA">
+                                <rect key="frame" x="0.0" y="64" width="375" height="133.5"/>
+                            </mapView>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="7V0-xs-HSi">
+                                <rect key="frame" x="0.0" y="197.5" width="375" height="469.5"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="6gH-Ht-4Vg">
+                                    <size key="itemSize" width="50" height="50"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                </collectionViewFlowLayout>
+                                <cells>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="XSy-1n-8h5">
+                                        <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                            <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </view>
+                                    </collectionViewCell>
+                                </cells>
+                            </collectionView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="bottom" secondItem="7V0-xs-HSi" secondAttribute="bottom" id="6HU-D3-Dta"/>
+                            <constraint firstItem="5FR-Gs-SYA" firstAttribute="height" secondItem="uqc-DS-G3P" secondAttribute="height" multiplier="1:5" id="Aa0-up-IHF"/>
+                            <constraint firstItem="5FR-Gs-SYA" firstAttribute="top" secondItem="ClN-pq-v9f" secondAttribute="bottom" id="K4U-Pc-T4k"/>
+                            <constraint firstItem="7V0-xs-HSi" firstAttribute="top" secondItem="5FR-Gs-SYA" secondAttribute="bottom" id="K8F-KY-J8P"/>
+                            <constraint firstItem="5FR-Gs-SYA" firstAttribute="leading" secondItem="uqc-DS-G3P" secondAttribute="leading" id="Q2D-JM-WIC"/>
+                            <constraint firstItem="7V0-xs-HSi" firstAttribute="leading" secondItem="uqc-DS-G3P" secondAttribute="leading" id="Wc6-ME-1x9"/>
+                            <constraint firstAttribute="trailing" secondItem="7V0-xs-HSi" secondAttribute="trailing" id="eXs-tx-Gcn"/>
+                            <constraint firstAttribute="trailing" secondItem="5FR-Gs-SYA" secondAttribute="trailing" id="ozA-aT-V8j"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="BxS-as-NLx" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1428" y="170"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="aCM-hm-pIR">
