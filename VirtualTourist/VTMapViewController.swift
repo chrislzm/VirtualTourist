@@ -13,8 +13,7 @@ import CoreData
 class VTMapViewController: UIViewController, MKMapViewDelegate {
 
     // MARK: Properties
-    var fetchedResultsController : NSFetchedResultsController<NSFetchRequestResult>?
-    var coordinateToShow:CLLocationCoordinate2D?
+    var pinToShow:Pin?
     
     // MARK: Outlets
     @IBOutlet weak var mapView: MKMapView!
@@ -26,12 +25,13 @@ class VTMapViewController: UIViewController, MKMapViewDelegate {
         if let savedPins = VTModel.sharedInstance().getSavedPins() {
             
             // Add them to our MapView
-            var annotations = [MKPointAnnotation]()
+            var annotations = [VTMKPointAnnotation]()
             
             for savedPin in savedPins {
-                let annotation = MKPointAnnotation()
+                let annotation = VTMKPointAnnotation()
                 let coordinate = CLLocationCoordinate2D(latitude: savedPin.latitude, longitude: savedPin.longitude)
                 annotation.coordinate = coordinate
+                annotation.pin = savedPin
                 annotations.append(annotation)
             }
             mapView.addAnnotations(annotations)
@@ -42,14 +42,20 @@ class VTMapViewController: UIViewController, MKMapViewDelegate {
         if gestureRecognizer.state == .began {
             let touchPoint = gestureRecognizer.location(in: mapView)
             let newCoordinates = mapView.convert(touchPoint, toCoordinateFrom: mapView)
-            let annotation = MKPointAnnotation()
+            let annotation = VTMKPointAnnotation()
             annotation.coordinate = newCoordinates
             mapView.addAnnotation(annotation)
             print(newCoordinates)
-            VTModel.sharedInstance().createNewPin(lat: newCoordinates.latitude, long: newCoordinates.longitude) { (error) in
+            VTModel.sharedInstance().createNewPin(lat: newCoordinates.latitude, long: newCoordinates.longitude) { (error,pin) in
+                
+                if let pin = pin {
+                    annotation.pin = pin
+                    print("Saved pin to the annotation")
+                }
+                
                 if let error = error {
                     DispatchQueue.main.async {
-                        self.displayAlertWithOKButton("Error creating pin",error)
+                        self.displayAlertWithOKButton("Error downloading photos from Flickr",error)
                     }
                 }
             }
@@ -58,16 +64,16 @@ class VTMapViewController: UIViewController, MKMapViewDelegate {
     
     // Delegate method that respond to taps on pins
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
-        
-        // Save the collection coordinate
-        coordinateToShow = view.annotation?.coordinate
+        // Get the pin stored in the annotation and save it
+        let vtAnnotation = view.annotation as! VTMKPointAnnotation
+        pinToShow = vtAnnotation.pin
         performSegue(withIdentifier: "showPinCollection", sender: self)
     }
     
-    // Send the collection coordinate over
+    // Send the pin to the collection view
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let controller = segue.destination as! VTCollectionViewController
-        controller.coordinate = coordinateToShow
+        controller.pin = pinToShow
     }
     
     // MARK: Helper methods
