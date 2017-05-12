@@ -29,16 +29,23 @@ class VTModel {
                 completionHandler(error)
                 return
             }
+
+            // If there was no error message, we can safely unwrap
+            let photoURLs = photoURLs!
             
-            // Create model objects for each photo, and attach it to the pin
-            for photoURL in photoURLs! {
-                let newPhoto = Photo(url: photoURL, context: stack.context)
-                newPhoto.pin = newPin
-                print("Added photoURL into Pin! \(photoURL)")
+            if photoURLs.count > 0 {
+                // Create model objects for each photo, and attach it to the pin
+                for photoURL in photoURLs {
+                    let newPhoto = Photo(url: photoURL, context: stack.context)
+                    newPhoto.pin = newPin
+                    print("Added photoURL into Pin! \(photoURL)")
+                }
+                // Save the URLs
+                stack.save()
+            } else {
+                // TODO: Remove debug statement, do we need to do something if there are no photos?
+                print("No photos in this area")
             }
-            
-            // Save the URLs
-            stack.save()
         }
     }
     
