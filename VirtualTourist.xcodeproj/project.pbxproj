@@ -50,7 +50,6 @@
 		A5E7BDB41EC4308B00C62CE0 = {
 			isa = PBXGroup;
 			children = (
-				A5E7BDC01EC4308B00C62CE0 /* AppDelegate.swift */,
 				A5E7BDE51EC43DDF00C62CE0 /* Model */,
 				A5E7BDE61EC43E0100C62CE0 /* View */,
 				A5E7BDBF1EC4308B00C62CE0 /* Controller */,
@@ -78,6 +77,7 @@
 		A5E7BDE51EC43DDF00C62CE0 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				A5E7BDC01EC4308B00C62CE0 /* AppDelegate.swift */,
 				A5F1A1371EC5393D00A67848 /* CoreDataStack.swift */,
 				A5E7BDCC1EC4308B00C62CE0 /* Info.plist */,
 				A5E7BDD21EC4374C00C62CE0 /* Model.xcdatamodeld */,
