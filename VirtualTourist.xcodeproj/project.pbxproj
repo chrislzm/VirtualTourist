@@ -18,6 +18,7 @@
 		A5F1A1351EC522AE00A67848 /* Pin+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F1A1311EC522AE00A67848 /* Pin+CoreDataClass.swift */; };
 		A5F1A1361EC522AE00A67848 /* Pin+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F1A1321EC522AE00A67848 /* Pin+CoreDataProperties.swift */; };
 		A5F1A1381EC5393D00A67848 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F1A1371EC5393D00A67848 /* CoreDataStack.swift */; };
+		A5F1A13A1EC53AEA00A67848 /* VTModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F1A1391EC53AEA00A67848 /* VTModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +35,7 @@
 		A5F1A1311EC522AE00A67848 /* Pin+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Pin+CoreDataClass.swift"; path = "VirtualTourist/Pin+CoreDataClass.swift"; sourceTree = "<group>"; };
 		A5F1A1321EC522AE00A67848 /* Pin+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Pin+CoreDataProperties.swift"; path = "VirtualTourist/Pin+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		A5F1A1371EC5393D00A67848 /* CoreDataStack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CoreDataStack.swift; path = VirtualTourist/CoreDataStack.swift; sourceTree = "<group>"; };
+		A5F1A1391EC53AEA00A67848 /* VTModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VTModel.swift; path = VirtualTourist/VTModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,6 +87,7 @@
 				A5F1A1301EC522AE00A67848 /* Photo+CoreDataProperties.swift */,
 				A5F1A1311EC522AE00A67848 /* Pin+CoreDataClass.swift */,
 				A5F1A1321EC522AE00A67848 /* Pin+CoreDataProperties.swift */,
+				A5F1A1391EC53AEA00A67848 /* VTModel.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -180,6 +183,7 @@
 				A5F1A1341EC522AE00A67848 /* Photo+CoreDataProperties.swift in Sources */,
 				A5E7BDD41EC4374C00C62CE0 /* Model.xcdatamodeld in Sources */,
 				A5F1A1381EC5393D00A67848 /* CoreDataStack.swift in Sources */,
+				A5F1A13A1EC53AEA00A67848 /* VTModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
