@@ -42,7 +42,7 @@
                     <navigationItem key="navigationItem" title="Virtual Tourist" id="IaC-yC-f70"/>
                     <connections>
                         <outlet property="mapView" destination="mcP-3v-jvC" id="Saf-em-rco"/>
-                        <segue destination="keC-km-QxW" kind="show" identifier="showPinCollection" id="VbW-Z0-cah"/>
+                        <segue destination="keC-km-QxW" kind="show" identifier="showPinCollection" id="z0c-kW-YIa"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -73,21 +73,39 @@
                                 <rect key="frame" x="0.0" y="197.5" width="375" height="469.5"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="6gH-Ht-4Vg">
-                                    <size key="itemSize" width="50" height="50"/>
+                                    <size key="itemSize" width="159" height="153"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="XSy-1n-8h5">
-                                        <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="VTCollectionViewCell" id="XSy-1n-8h5" customClass="VTCollectionViewCell" customModule="VirtualTourist" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="0.0" width="159" height="153"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                            <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="159" height="153"/>
                                             <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="g9K-ej-r9n">
+                                                    <rect key="frame" x="0.0" y="0.0" width="159" height="153"/>
+                                                </imageView>
+                                            </subviews>
                                         </view>
+                                        <constraints>
+                                            <constraint firstItem="g9K-ej-r9n" firstAttribute="leading" secondItem="XSy-1n-8h5" secondAttribute="leading" id="M6v-Zg-m8M"/>
+                                            <constraint firstAttribute="trailing" secondItem="g9K-ej-r9n" secondAttribute="trailing" id="M8O-xj-Iaa"/>
+                                            <constraint firstItem="g9K-ej-r9n" firstAttribute="top" secondItem="XSy-1n-8h5" secondAttribute="top" id="kkS-Tp-cea"/>
+                                            <constraint firstAttribute="bottom" secondItem="g9K-ej-r9n" secondAttribute="bottom" id="nIn-Mg-Qvt"/>
+                                        </constraints>
+                                        <connections>
+                                            <outlet property="photo" destination="g9K-ej-r9n" id="8xq-FA-Cy3"/>
+                                        </connections>
                                     </collectionViewCell>
                                 </cells>
+                                <connections>
+                                    <outlet property="dataSource" destination="keC-km-QxW" id="Hbv-OI-eRM"/>
+                                    <outlet property="delegate" destination="keC-km-QxW" id="iwm-JQ-dES"/>
+                                </connections>
                             </collectionView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -103,12 +121,14 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="collectionView" destination="7V0-xs-HSi" id="DKC-gi-RDp"/>
+                        <outlet property="flowLayout" destination="6gH-Ht-4Vg" id="XMX-sX-Ytj"/>
                         <outlet property="mapView" destination="5FR-Gs-SYA" id="oZF-Yd-phJ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="BxS-as-NLx" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1428" y="170"/>
+            <point key="canvasLocation" x="1428" y="169.56521739130437"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="aCM-hm-pIR">
