@@ -10,7 +10,7 @@ import UIKit
 import MapKit
 import CoreData
 
-class VTMapViewController: UIViewController {
+class VTMapViewController: UIViewController, MKMapViewDelegate {
 
     // MARK: Properties
     var fetchedResultsController : NSFetchedResultsController<NSFetchRequestResult>?
@@ -37,11 +37,6 @@ class VTMapViewController: UIViewController {
         }
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-
     @IBAction func longPressOnMap(_ gestureRecognizer: UIGestureRecognizer) {
         if gestureRecognizer.state == .began {
             let touchPoint = gestureRecognizer.location(in: mapView)
@@ -58,6 +53,11 @@ class VTMapViewController: UIViewController {
                 }
             }
         }
+    }
+    
+    // Delegate method that respond to taps. Opens the system browser to the URL specified in the annotationViews subtitle property.
+    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+        print ("User tapped on annotation view")
     }
     
     // MARK: Helper methods
