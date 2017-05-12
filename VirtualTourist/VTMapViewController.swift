@@ -46,16 +46,13 @@ class VTMapViewController: UIViewController, MKMapViewDelegate {
             annotation.coordinate = newCoordinates
             mapView.addAnnotation(annotation)
             print(newCoordinates)
-            VTModel.sharedInstance().createNewPin(lat: newCoordinates.latitude, long: newCoordinates.longitude) { (error,pin) in
-                
-                if let pin = pin {
-                    annotation.pin = pin
-                    print("Saved pin to the annotation")
-                }
-                
+            let newPin = VTModel.sharedInstance().createNewPin(lat: newCoordinates.latitude, long: newCoordinates.longitude)
+            annotation.pin = newPin
+            
+            VTModel.sharedInstance().loadNewPhotoURLsFor(newPin) { (error) in
                 if let error = error {
                     DispatchQueue.main.async {
-                        self.displayAlertWithOKButton("Error downloading photos from Flickr",error)
+                        self.displayAlertWithOKButton("Error downloading photos URLs from Flickr",error)
                     }
                 }
             }
