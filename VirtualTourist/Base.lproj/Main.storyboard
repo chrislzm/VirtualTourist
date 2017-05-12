@@ -6,6 +6,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12088"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -73,31 +74,39 @@
                                 <rect key="frame" x="0.0" y="197.5" width="375" height="469.5"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="6gH-Ht-4Vg">
-                                    <size key="itemSize" width="159" height="153"/>
+                                    <size key="itemSize" width="102" height="100"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="VTCollectionViewCell" id="XSy-1n-8h5" customClass="VTCollectionViewCell" customModule="VirtualTourist" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="0.0" width="159" height="153"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="102" height="100"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                            <rect key="frame" x="0.0" y="0.0" width="159" height="153"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="102" height="100"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="g9K-ej-r9n">
-                                                    <rect key="frame" x="0.0" y="0.0" width="159" height="153"/>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="g9K-ej-r9n">
+                                                    <rect key="frame" x="0.0" y="0.0" width="102" height="100"/>
                                                 </imageView>
+                                                <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="Ucs-IO-gCE">
+                                                    <rect key="frame" x="8" y="8" width="86" height="84"/>
+                                                </activityIndicatorView>
                                             </subviews>
                                         </view>
                                         <constraints>
+                                            <constraint firstItem="Ucs-IO-gCE" firstAttribute="leading" secondItem="XSy-1n-8h5" secondAttribute="leadingMargin" id="4bn-pZ-04O"/>
                                             <constraint firstItem="g9K-ej-r9n" firstAttribute="leading" secondItem="XSy-1n-8h5" secondAttribute="leading" id="M6v-Zg-m8M"/>
                                             <constraint firstAttribute="trailing" secondItem="g9K-ej-r9n" secondAttribute="trailing" id="M8O-xj-Iaa"/>
+                                            <constraint firstAttribute="trailingMargin" secondItem="Ucs-IO-gCE" secondAttribute="trailing" id="PBJ-rj-2ZJ"/>
+                                            <constraint firstItem="Ucs-IO-gCE" firstAttribute="top" secondItem="XSy-1n-8h5" secondAttribute="topMargin" id="Yon-jW-8rV"/>
                                             <constraint firstItem="g9K-ej-r9n" firstAttribute="top" secondItem="XSy-1n-8h5" secondAttribute="top" id="kkS-Tp-cea"/>
                                             <constraint firstAttribute="bottom" secondItem="g9K-ej-r9n" secondAttribute="bottom" id="nIn-Mg-Qvt"/>
+                                            <constraint firstAttribute="bottomMargin" secondItem="Ucs-IO-gCE" secondAttribute="bottom" id="qeo-56-CtC"/>
                                         </constraints>
                                         <connections>
+                                            <outlet property="activityView" destination="Ucs-IO-gCE" id="lAf-8V-J99"/>
                                             <outlet property="photo" destination="g9K-ej-r9n" id="8xq-FA-Cy3"/>
                                         </connections>
                                     </collectionViewCell>

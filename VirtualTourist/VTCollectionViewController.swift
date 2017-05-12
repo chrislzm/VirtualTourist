@@ -66,7 +66,6 @@ class VTCollectionViewController : UIViewController,UICollectionViewDelegate,UIC
             cellWidthAndHeightForHorizontalOrientation = (view.frame.size.width - (cellSpacing*(cellsPerColumn-1))) / cellsPerColumn
             setFlowLayoutForHorizontalOrientation()
         }
-
     }
     
     // MARK: CollectionView Methods
@@ -86,8 +85,9 @@ class VTCollectionViewController : UIViewController,UICollectionViewDelegate,UIC
         // If the photo image data is available
         if let binaryPhoto = photo.imageData {
             cell.photo.image = UIImage(data: binaryPhoto as Data)
+            cell.stopLoadingAnimation()
         } else {
-            // TODO: Show an loading animation
+            cell.startLoadingAnimation()
         }
         
         return cell

@@ -11,4 +11,15 @@ import UIKit
 class VTCollectionViewCell : UICollectionViewCell {
     
     @IBOutlet weak var photo: UIImageView!
+    @IBOutlet weak var activityView: UIActivityIndicatorView!
+    
+    // MARK: Activity View Indicator methods
+    
+    func startLoadingAnimation() {
+        activityView.startAnimating()
+    }
+    
+    func stopLoadingAnimation() {
+        activityView.stopAnimating()
+    }
 }
