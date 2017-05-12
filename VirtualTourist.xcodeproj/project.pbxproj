@@ -17,6 +17,7 @@
 		A5F1A1341EC522AE00A67848 /* Photo+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F1A1301EC522AE00A67848 /* Photo+CoreDataProperties.swift */; };
 		A5F1A1351EC522AE00A67848 /* Pin+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F1A1311EC522AE00A67848 /* Pin+CoreDataClass.swift */; };
 		A5F1A1361EC522AE00A67848 /* Pin+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F1A1321EC522AE00A67848 /* Pin+CoreDataProperties.swift */; };
+		A5F1A1381EC5393D00A67848 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F1A1371EC5393D00A67848 /* CoreDataStack.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +33,7 @@
 		A5F1A1301EC522AE00A67848 /* Photo+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Photo+CoreDataProperties.swift"; path = "VirtualTourist/Photo+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		A5F1A1311EC522AE00A67848 /* Pin+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Pin+CoreDataClass.swift"; path = "VirtualTourist/Pin+CoreDataClass.swift"; sourceTree = "<group>"; };
 		A5F1A1321EC522AE00A67848 /* Pin+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Pin+CoreDataProperties.swift"; path = "VirtualTourist/Pin+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		A5F1A1371EC5393D00A67848 /* CoreDataStack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CoreDataStack.swift; path = VirtualTourist/CoreDataStack.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -76,6 +78,7 @@
 		A5E7BDE51EC43DDF00C62CE0 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				A5F1A1371EC5393D00A67848 /* CoreDataStack.swift */,
 				A5E7BDCC1EC4308B00C62CE0 /* Info.plist */,
 				A5E7BDD21EC4374C00C62CE0 /* Model.xcdatamodeld */,
 				A5F1A12F1EC522AE00A67848 /* Photo+CoreDataClass.swift */,
@@ -176,6 +179,7 @@
 				A5F1A1351EC522AE00A67848 /* Pin+CoreDataClass.swift in Sources */,
 				A5F1A1341EC522AE00A67848 /* Photo+CoreDataProperties.swift in Sources */,
 				A5E7BDD41EC4374C00C62CE0 /* Model.xcdatamodeld in Sources */,
+				A5F1A1381EC5393D00A67848 /* CoreDataStack.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
