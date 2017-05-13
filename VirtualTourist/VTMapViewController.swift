@@ -63,7 +63,7 @@ class VTMapViewController: UIViewController, MKMapViewDelegate {
             let newPin = VTModel.sharedInstance().createNewPin(lat: newCoordinates.latitude, long: newCoordinates.longitude)
             annotation.pin = newPin
             
-            VTModel.sharedInstance().loadNewPhotoURLsFor(newPin) { (error) in
+            VTModel.sharedInstance().loadNewPhotosFor(newPin) { (error) in
                 if let error = error {
                     DispatchQueue.main.async {
                         self.displayAlertWithOKButton("Error downloading photos URLs from Flickr",error)
