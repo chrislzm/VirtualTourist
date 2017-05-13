@@ -160,6 +160,12 @@
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="There are no photos at this location" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="t74-ds-fQW">
+                                <rect key="frame" x="-0.5" y="198" width="375" height="404"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -170,10 +176,14 @@
                             <constraint firstItem="7V0-xs-HSi" firstAttribute="top" secondItem="5FR-Gs-SYA" secondAttribute="bottom" id="K8F-KY-J8P"/>
                             <constraint firstItem="wnP-CN-Opb" firstAttribute="top" secondItem="yy3-gP-uMW" secondAttribute="bottom" id="N46-ni-stY"/>
                             <constraint firstItem="5FR-Gs-SYA" firstAttribute="leading" secondItem="uqc-DS-G3P" secondAttribute="leading" id="Q2D-JM-WIC"/>
+                            <constraint firstItem="t74-ds-fQW" firstAttribute="centerY" secondItem="7V0-xs-HSi" secondAttribute="centerY" id="QW5-Iq-AQK"/>
                             <constraint firstItem="6Bw-EU-Duw" firstAttribute="leading" secondItem="uqc-DS-G3P" secondAttribute="leading" id="SFK-n1-xVf"/>
+                            <constraint firstItem="t74-ds-fQW" firstAttribute="centerX" secondItem="7V0-xs-HSi" secondAttribute="centerX" id="Uwu-Mq-7oa"/>
                             <constraint firstItem="7V0-xs-HSi" firstAttribute="leading" secondItem="uqc-DS-G3P" secondAttribute="leading" id="Wc6-ME-1x9"/>
                             <constraint firstAttribute="trailing" secondItem="7V0-xs-HSi" secondAttribute="trailing" id="eXs-tx-Gcn"/>
                             <constraint firstAttribute="bottomMargin" secondItem="6Bw-EU-Duw" secondAttribute="bottom" id="f4R-z5-hbH"/>
+                            <constraint firstItem="t74-ds-fQW" firstAttribute="height" secondItem="7V0-xs-HSi" secondAttribute="height" id="hjY-Oc-kjE"/>
+                            <constraint firstItem="t74-ds-fQW" firstAttribute="width" secondItem="7V0-xs-HSi" secondAttribute="width" id="hsp-YP-4Rp"/>
                             <constraint firstAttribute="trailing" secondItem="6Bw-EU-Duw" secondAttribute="trailing" id="ljt-WQ-V4M"/>
                             <constraint firstAttribute="trailing" secondItem="5FR-Gs-SYA" secondAttribute="trailing" id="ozA-aT-V8j"/>
                             <constraint firstItem="6Bw-EU-Duw" firstAttribute="top" secondItem="7V0-xs-HSi" secondAttribute="bottom" id="wvk-E4-xMs"/>
@@ -184,6 +194,7 @@
                         <outlet property="flowLayout" destination="6gH-Ht-4Vg" id="XMX-sX-Ytj"/>
                         <outlet property="getNewPhotosButton" destination="6Bw-EU-Duw" id="EJg-Y8-tO5"/>
                         <outlet property="mapView" destination="5FR-Gs-SYA" id="oZF-Yd-phJ"/>
+                        <outlet property="noPhotosHereLabel" destination="t74-ds-fQW" id="mYO-P6-V67"/>
                         <outlet property="tapPhotoToRemoveLabel" destination="yy3-gP-uMW" id="ITd-iQ-dOD"/>
                     </connections>
                 </viewController>

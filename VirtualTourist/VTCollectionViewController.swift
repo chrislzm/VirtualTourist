@@ -32,6 +32,7 @@ class VTCollectionViewController : UIViewController,UICollectionViewDelegate,UIC
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var getNewPhotosButton: UIButton!
     @IBOutlet weak var tapPhotoToRemoveLabel: UILabel!
+    @IBOutlet weak var noPhotosHereLabel: UILabel!
     
     // MARK: Actions
     @IBAction func getNewPhotos(_ sender: Any) {
@@ -136,23 +137,27 @@ class VTCollectionViewController : UIViewController,UICollectionViewDelegate,UIC
         // Disable photo-related buttons until we're done loading everything
         disablePhotoButtons()
 
-        // Get a Fetch Results Controller containing this pin's photos
-        fetchedResultsController = VTModel.sharedInstance().createFrcFor(pin!)
-        fetchedResultsController?.delegate = self
-        
-        // Get the fetched photos, if any
-        if let photos = fetchedResultsController?.fetchedObjects as? [Photo] {
-            VTModel.sharedInstance().loadImagesFor(photos) { (error) in
-                DispatchQueue.main.async {
-                    guard error == nil else {
-                        self.displayAlertWithOKButton("Error getting new photos", error!)
-                        return
+        // If there are photos available at this location
+        if pin!.photosTotalPages > 0 {
+            // Get a Fetch Results Controller containing this pin's photos
+            fetchedResultsController = VTModel.sharedInstance().createFrcFor(pin!)
+            fetchedResultsController?.delegate = self
+            
+            // Get the fetched photos, if any
+            if let photos = fetchedResultsController?.fetchedObjects as? [Photo] {
+                VTModel.sharedInstance().loadImagesFor(photos) { (error) in
+                    DispatchQueue.main.async {
+                        guard error == nil else {
+                            self.displayAlertWithOKButton("Error getting new photos", error!)
+                            return
+                        }
+                        self.enablePhotoButtons()
                     }
-                    self.enablePhotoButtons()
                 }
             }
         } else {
-            displayAlertWithOKButton("", "No photos found at this location")
+            // Display message that there are no photos here
+            noPhotosHereLabel.isHidden = false
         }
     }
     
