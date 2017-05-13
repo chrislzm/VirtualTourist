@@ -131,38 +131,7 @@ class VTModel {
         }
         coreDataStack.save()
     }
-    
-    // Deletes existing photos and loads new photos in a given a pin and its fetched results controller
-    func getNewPhotosFor (_ pin:Pin, _ frc:NSFetchedResultsController<NSFetchRequestResult>, completionHandler: @escaping (_ error: String?) -> Void) {
-        print("1. Deleting all photos")
-        
-        // 1. Delete all photos
-        if let photos = frc.fetchedObjects as? [Photo] {
-            let context = frc.managedObjectContext
-            for photo in photos {
-                context.delete(photo)
-            }
-            do {
-                try context.save()
-            } catch {
-                fatalError("Unable to delete photos")
-            }
-        }
-        
-        print("2. Loading new photo URLs")
-        // 2. Load new photo URLs
-        VTModel.sharedInstance().loadNewPhotosFor(pin) { (error) in
-            guard error == nil else {
-                completionHandler("Error loading new photo URLs")
-                return
-            }
-            
-            print("3. Downloading new images")
-            // 3. Load images
-            VTModel.sharedInstance().loadImagesFor(frc, completionHandler: completionHandler)
-        }
-    }
-    
+
     func deletePhoto(_ photo:Photo)
     {
         let coreDataStack = getCoreDataStack()
