@@ -143,18 +143,18 @@ class VTCollectionViewController : UIViewController,UICollectionViewDelegate,UIC
 
         // If there are photos available at this location
         if pin!.photosTotalPages > 0 {
+            
             // Get a Fetch Results Controller containing this pin's photos
             fetchedResultsController = VTModel.sharedInstance().createFrcFor(pin!)
             fetchedResultsController?.delegate = self
             
-            // Get the fetched photos, if any
             if let photos = fetchedResultsController?.fetchedObjects as? [Photo] {
                 VTModel.sharedInstance().loadImagesFor(photos) { (error) in
+                    guard error == nil else {
+                        self.displayError(error)
+                        return
+                    }
                     DispatchQueue.main.async {
-                        guard error == nil else {
-                            self.displayAlertWithOKButton("Error getting new photos", error!)
-                            return
-                        }
                         self.enablePhotoButtons()
                     }
                 }
