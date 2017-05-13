@@ -24,7 +24,7 @@ class VTModel {
         return newPin
     }
     
-    func loadNewPhotoURLsFor(_ pin: Pin, completionHandler: @escaping (_ error: String?) -> Void) {
+    func loadNewPhotosFor(_ pin: Pin, completionHandler: @escaping (_ error: String?) -> Void) {
         
         let coreDataStack = getCoreDataStack()
         
@@ -151,7 +151,7 @@ class VTModel {
         
         print("2. Loading new photo URLs")
         // 2. Load new photo URLs
-        VTModel.sharedInstance().loadNewPhotoURLsFor(pin) { (error) in
+        VTModel.sharedInstance().loadNewPhotosFor(pin) { (error) in
             guard error == nil else {
                 completionHandler("Error loading new photo URLs")
                 return
@@ -178,27 +178,25 @@ class VTModel {
         coreDataStack.save()
     }
     
-    func loadImagesFor(_ frc:NSFetchedResultsController<NSFetchRequestResult>, completionHandler: @escaping (_ error: String?) -> Void) {
+    func loadImagesFor(_ photos:[Photo], completionHandler: @escaping (_ error: String?) -> Void) {
 
         let coreDataStack = getCoreDataStack()
         
-        let photos = frc.fetchedObjects as! [Photo]
-        
         coreDataStack.performBackgroundBatchOperation { (context) in
+            
+            var error:String? = nil
+            
             for photo in photos {
                 if photo.imageData == nil {
                     let imageURL = URL(string: photo.url!)
                     if let imageData = try? Data(contentsOf: imageURL!) {
-                        print("Downloaded image successfully")
                         photo.imageData = imageData as NSData
                     } else {
-                        print("Image does not exist at \(imageURL!)")
+                        error = "Was unable to download one or more photos"
                     }
-                } else {
-                    print("Image already in persistence")
                 }
             }
-            completionHandler(nil)
+            completionHandler(error)
         }
     }
     
