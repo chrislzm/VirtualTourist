@@ -2,6 +2,8 @@
 //  VTCollectionViewCell.swift
 //  VirtualTourist
 //
+//  Cell for the Virtual Tourist Collection View class
+//
 //  Created by Chris Leung on 5/11/17.
 //  Copyright © 2017 Chris Leung. All rights reserved.
 //
@@ -11,7 +13,7 @@ import UIKit
 class VTCollectionViewCell : UICollectionViewCell {
     
     // MARK: Properites
-    var photo:Photo?
+    var photo:Photo? // Stores a copy of the Photo object that it displays
     
     // MARK: Outlets
     
