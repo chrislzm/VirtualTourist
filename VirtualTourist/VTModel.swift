@@ -11,9 +11,6 @@ import CoreData
 
 class VTModel {
     
-    // MARK: Properties
-    var fetchedResultsController : NSFetchedResultsController<NSFetchRequestResult>?
-    
     func createNewPin(lat:Double, long:Double) -> Pin  {
 
         let coreDataStack = getCoreDataStack()
@@ -106,17 +103,17 @@ class VTModel {
         let pred = NSPredicate(format: "pin = %@", argumentArray: [pin])
         fr.predicate = pred
         
-        // Create and save reference to FetchedResultsController
-        fetchedResultsController = NSFetchedResultsController(fetchRequest: fr, managedObjectContext:coreDataStack.context, sectionNameKeyPath: nil, cacheName: nil)
+        // Create FetchedResultsController
+        let frc = NSFetchedResultsController(fetchRequest: fr, managedObjectContext:coreDataStack.context, sectionNameKeyPath: nil, cacheName: nil)
         
         do {
-            try fetchedResultsController!.performFetch()
+            try frc.performFetch()
         } catch let e as NSError {
-            print("Error while trying to perform a search: \n\(e)\n\(String(describing: fetchedResultsController))")
+            print("Error while trying to perform a search: \n\(e)\n\(frc)")
         }
 
         // Return reference to the FetchedResultsController
-        return fetchedResultsController!
+        return frc
     }
 
     // Returns the Core Data Stack
@@ -125,6 +122,36 @@ class VTModel {
         return delegate.stack
     }
     
+    // Deletes existing photos and loads new photos in a given a pin and its fetched results controller
+    func getNewPhotosFor (_ pin:Pin, _ frc:NSFetchedResultsController<NSFetchRequestResult>, errorHandler: @escaping (_ error: String?) -> Void) {
+        print("1. Deleting all photos")
+        
+        // 1. Delete all photos
+        if let photos = frc.fetchedObjects as? [Photo] {
+            let context = frc.managedObjectContext
+            for photo in photos {
+                context.delete(photo)
+            }
+            do {
+                try context.save()
+            } catch {
+                fatalError("Unable to delete photos")
+            }
+        }
+        
+        print("2. Loading new photo URLs")
+        // 2. Load new photo URLs
+        VTModel.sharedInstance().loadNewPhotoURLsFor(pin) { (error) in
+            guard error == nil else {
+                errorHandler("Error loading new photo URLs")
+                return
+            }
+            
+            print("3. Loading new images")
+            // 3. Load images
+            VTModel.sharedInstance().loadImagesFor(frc)
+        }
+    }
     func loadImagesFor(_ frc:NSFetchedResultsController<NSFetchRequestResult>) {
         
         // Get the stack
