@@ -153,6 +153,17 @@ class VTModel {
         }
     }
     
+    func deletePhoto(_ photo:Photo, _ frc:NSFetchedResultsController<NSFetchRequestResult>, completionHandler: @escaping (_ error: String?)-> Void) {
+        let context = frc.managedObjectContext
+        context.delete(photo)
+        do {
+            try context.save()
+        } catch {
+            fatalError("Unable to delete photos")
+        }
+        completionHandler(nil)
+    }
+    
     func loadImagesFor(_ frc:NSFetchedResultsController<NSFetchRequestResult>, completionHandler: @escaping (_ error: String?) -> Void) {
         
         // Get the stack
@@ -169,7 +180,7 @@ class VTModel {
                         print("Downloaded image successfully")
                         photo.imageData = imageData as NSData
                     } else {
-                        print("Image does not exist at \(imageURL)")
+                        print("Image does not exist at \(imageURL!)")
                     }
                 } else {
                     print("Image already in persistence")
