@@ -153,15 +153,12 @@ class VTModel {
         }
     }
     
-    func deletePhoto(_ photo:Photo, _ frc:NSFetchedResultsController<NSFetchRequestResult>, completionHandler: @escaping (_ error: String?)-> Void) {
-        let context = frc.managedObjectContext
+    func deletePhoto(_ photo:Photo)
+    {
+        let coreDataStack = getCoreDataStack()
+        let context = coreDataStack.context
         context.delete(photo)
-        do {
-            try context.save()
-        } catch {
-            fatalError("Unable to delete photos")
-        }
-        completionHandler(nil)
+        coreDataStack.save()
     }
     
     func deletePin(_ pin:Pin) {
