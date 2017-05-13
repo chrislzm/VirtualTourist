@@ -31,32 +31,10 @@ class VTCollectionViewController : UIViewController,UICollectionViewDelegate,UIC
     
     // MARK: Actions
     @IBAction func getNewPhotos(_ sender: Any) {
-
-        print("1. Deleting all photos")
-        // 1. Delete all photos
-        if let photos = fetchedResultsController?.fetchedObjects as? [Photo] {
-            let context = fetchedResultsController?.managedObjectContext
-            for photo in photos {
-                context?.delete(photo)
+        VTModel.sharedInstance().getNewPhotosFor(pin!, fetchedResultsController!) { (error) in
+            DispatchQueue.main.async {
+                self.displayAlertWithOKButton("Error getting new photos", error!)
             }
-            do {
-                try context?.save()
-            } catch {
-                fatalError("Unable to delete photos")
-            }
-        }
-        
-        print("2. Loading new photo URLs")
-        // 2. Load new photo URLs
-        VTModel.sharedInstance().loadNewPhotoURLsFor(pin!) { (error) in
-            guard error == nil else {
-                self.displayAlertWithOKButton("Error loading new photo URLs", error!)
-                return
-            }
-            
-            print("3. Loading new images")
-            // 3. Load images
-            VTModel.sharedInstance().loadImagesFor(self.fetchedResultsController!)
         }
     }
     
