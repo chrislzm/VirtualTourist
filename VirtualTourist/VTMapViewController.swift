@@ -61,11 +61,16 @@ class VTMapViewController: UIViewController, MKMapViewDelegate {
     
     // Delegate method that respond to taps on pins
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+        
+        // Deselect the annotation so we can select it again after, if we want
+        mapView.deselectAnnotation(view.annotation, animated: true)
+
         // Get the pin stored in the annotation and save it
         let vtAnnotation = view.annotation as! VTMKPointAnnotation
         pinToShow = vtAnnotation.pin
         performSegue(withIdentifier: "showPinCollection", sender: self)
     }
+    
     
     // Send the pin to the collection view
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
