@@ -2,6 +2,8 @@
 //  VTCollectionViewController.swift
 //  VirtualTourist
 //
+//  Displays a MapView and Collection View for a given Pin's location and photos respectively. Allows the user to get a new set of photos for the pin and remove individual photos from the pin.
+//
 //  Created by Chris Leung on 5/11/17.
 //  Copyright © 2017 Chris Leung. All rights reserved.
 //
