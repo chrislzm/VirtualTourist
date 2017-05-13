@@ -122,6 +122,16 @@ class VTModel {
         return delegate.stack
     }
     
+    // Delete all photos in given array of photos from Core Data Stack
+    func deleteAll(_ photos:[Photo]) {
+        let coreDataStack = getCoreDataStack()
+        let context = coreDataStack.context
+        for photo in photos {
+            context.delete(photo)
+        }
+        coreDataStack.save()
+    }
+    
     // Deletes existing photos and loads new photos in a given a pin and its fetched results controller
     func getNewPhotosFor (_ pin:Pin, _ frc:NSFetchedResultsController<NSFetchRequestResult>, completionHandler: @escaping (_ error: String?) -> Void) {
         print("1. Deleting all photos")
