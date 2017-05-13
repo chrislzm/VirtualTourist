@@ -108,6 +108,7 @@
                                         <connections>
                                             <outlet property="activityView" destination="Ucs-IO-gCE" id="lAf-8V-J99"/>
                                             <outlet property="photo" destination="g9K-ej-r9n" id="8xq-FA-Cy3"/>
+                                            <outlet property="photoImageView" destination="g9K-ej-r9n" id="jlt-FG-O3R"/>
                                         </connections>
                                     </collectionViewCell>
                                 </cells>
