@@ -13,14 +13,23 @@ import CoreData
 class VTMapViewController: UIViewController, MKMapViewDelegate {
 
     // MARK: Properties
-    var pinToShow:Pin?
+    var selectedPin:Pin?
+    var editingEnabled = false
     
     // MARK: Outlets
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var tapPinToDeleteLabel: UILabel!
 
     @IBAction func editButtonPressed(_ sender: Any) {
-        
+        if editingEnabled {
+            tapPinToDeleteLabel.fadeOut()
+            editingEnabled = false
+            navigationItem.rightBarButtonItem?.title = "Edit"
+        } else {
+            tapPinToDeleteLabel.fadeIn()
+            editingEnabled = true
+            navigationItem.rightBarButtonItem?.title = "Finish"
+        }
     }
     
     override func viewDidLoad() {
@@ -90,17 +99,30 @@ class VTMapViewController: UIViewController, MKMapViewDelegate {
         // Deselect the annotation so we can select it again after, if we want
         mapView.deselectAnnotation(view.annotation, animated: true)
 
-        // Get the pin stored in the annotation and save it
+        // Extract the Pin object from the annotation
         let vtAnnotation = view.annotation as! VTMKPointAnnotation
-        pinToShow = vtAnnotation.pin
-        performSegue(withIdentifier: "showPinCollection", sender: self)
+        let pin = vtAnnotation.pin!
+
+        if editingEnabled {
+            // First clear saved selected pins, so that we can remove all possible references to this pin
+            selectedPin = nil
+            
+            VTModel.sharedInstance().deletePin(pin)
+            mapView.removeAnnotation(vtAnnotation)
+        } else {
+            // Save the pin for the segue
+            selectedPin = pin
+            
+            // Display the pin's collection
+            performSegue(withIdentifier: "showPinCollection", sender: self)
+        }
     }
     
     
     // Send the pin to the collection view
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let controller = segue.destination as! VTCollectionViewController
-        controller.pin = pinToShow
+        controller.pin = selectedPin
     }
     
     // MARK: Helper methods
