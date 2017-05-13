@@ -164,6 +164,13 @@ class VTModel {
         completionHandler(nil)
     }
     
+    func deletePin(_ pin:Pin) {
+        let coreDataStack = getCoreDataStack()
+        let context = coreDataStack.context    
+        context.delete(pin)
+        coreDataStack.save()
+    }
+    
     func loadImagesFor(_ frc:NSFetchedResultsController<NSFetchRequestResult>, completionHandler: @escaping (_ error: String?) -> Void) {
         
         // Get the stack
