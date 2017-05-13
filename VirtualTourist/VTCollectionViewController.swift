@@ -17,6 +17,7 @@ class VTCollectionViewController : UIViewController,UICollectionViewDelegate,UIC
     var fetchedResultsController : NSFetchedResultsController<NSFetchRequestResult>?
     var blockOperations = [BlockOperation]() // Stores operations for CollectView performBatchUpdates method
     var editingPhotos = false // True when "edit" mode has been enabled by user (and photos can be removed)
+    let MAPVIEW_BBOX_SIZE:CLLocationDistance = 1000 // Size of the box displayed in the MapView (in meters)
     
     // MARK: Properties for flow layout
     private let cellsPerRow:CGFloat = 3.0
@@ -36,6 +37,7 @@ class VTCollectionViewController : UIViewController,UICollectionViewDelegate,UIC
     
     // MARK: Actions
 
+    // Downloads a new set of photos into the collection
     @IBAction func getNewPhotosButtonPressed(_ sender: Any) {
 
         // 1. Disable photo-related buttons until photos are done loading
@@ -45,34 +47,35 @@ class VTCollectionViewController : UIViewController,UICollectionViewDelegate,UIC
         let photosToRemove = fetchedResultsController?.fetchedObjects as! [Photo]
         VTModel.sharedInstance().deleteAll(photosToRemove)
         
-        // 3. Load new page of photo URLs for our pin into the model
+        // 3. Load new set of photos for our pin into the model
         VTModel.sharedInstance().loadNewPhotosFor(pin!) { (error) in
             
-            // TODO: Abstract this method
-            DispatchQueue.main.async {
-                self.enablePhotoButtons()
-                guard error == nil else {
-                    self.displayAlertWithOKButton("Error getting new photos", error!)
-                    return
-                }
+            guard error == nil else {
+                self.displayError(error)
+                return
             }
             
             // 4. Get the new photos from the model
             let newPhotos = self.fetchedResultsController?.fetchedObjects as! [Photo]
             
-            // 5. Tell the model to download the photo image data
+            // 5. Tell the model to download these photos' image data
             VTModel.sharedInstance().loadImagesFor(newPhotos) { (error) in
+                
+                guard error == nil else {
+                    self.displayError(error)
+                    return
+                }
+                
+                // 6. Now done loading photo images. Enable get photo/edit photos buttons.
                 DispatchQueue.main.async {
                     self.enablePhotoButtons()
-                    guard error == nil else {
-                        self.displayAlertWithOKButton("Error getting new photos", error!)
-                        return
-                    }
                 }
             }
         }
     }
 
+    // MARK: View Manipulation Methods 
+    
     func hideTapToRemovePhotoLabel() {
         tapPhotoToRemoveLabel.fadeOut()
         tapPhotoToRemoveLabel.isHidden = true
@@ -101,14 +104,14 @@ class VTCollectionViewController : UIViewController,UICollectionViewDelegate,UIC
         getNewPhotosButton.isEnabled = true
         editPhotosButton!.isEnabled = true
     }
-    
-    func removePhotos() {
+
+    func toggleEditingPhotos() {
         if editingPhotos {
             editingPhotos = false
             editPhotosButton!.title = "Edit"
             hideTapToRemovePhotoLabel()
             showGetNewPhotosButton()
-            } else {
+        } else {
             editingPhotos = true
             editPhotosButton!.title = "Finish"
             showTapToRemovePhotoLabel()
@@ -121,21 +124,21 @@ class VTCollectionViewController : UIViewController,UICollectionViewDelegate,UIC
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Add the pin as an annotation to the map
+        // Add the pin as an annotation to the MapView
         let annotation = MKPointAnnotation()
         let coordinate = CLLocationCoordinate2D(latitude: pin!.latitude, longitude: pin!.longitude)
         annotation.coordinate = coordinate
         mapView.addAnnotation(annotation)
         
         // Set our MapView to a 1km * 1km box around the geocoded location
-        let viewRegion = MKCoordinateRegionMakeWithDistance(coordinate, 1000, 1000);
+        let viewRegion = MKCoordinateRegionMakeWithDistance(coordinate, MAPVIEW_BBOX_SIZE, MAPVIEW_BBOX_SIZE);
         mapView.setRegion(viewRegion, animated: true)
 
-        // Setup the Edit button
-        editPhotosButton = UIBarButtonItem(title: "Edit", style: UIBarButtonItemStyle.plain, target:self, action: #selector(VTCollectionViewController.removePhotos))
+        // Setup and add the Edit button
+        editPhotosButton = UIBarButtonItem(title: "Edit", style: UIBarButtonItemStyle.plain, target:self, action: #selector(VTCollectionViewController.toggleEditingPhotos))
         navigationItem.rightBarButtonItem = editPhotosButton
         
-        // Disable photo-related buttons until we're done loading everything
+        // Disable all photo-related buttons until we're done loading everything
         disablePhotoButtons()
 
         // If there are photos available at this location
@@ -195,7 +198,7 @@ class VTCollectionViewController : UIViewController,UICollectionViewDelegate,UIC
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "VTCollectionViewCell", for: indexPath) as! VTCollectionViewCell
         let photo = fetchedResultsController!.object(at: indexPath) as! Photo
 
-        // Save the photo in the cell so we can easily delete the photo later if we need to
+        // Save the Photo object into the cell so we can easily delete it from Core Data if we need to
         cell.photo = photo
         
         // If the photo image data is available, display it
@@ -210,7 +213,7 @@ class VTCollectionViewController : UIViewController,UICollectionViewDelegate,UIC
         return cell
     }
     
-    
+    // Handles user removing photos from the collection by tapping it. Note that user must tap Edit button first in order to enable editing mode.
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath:IndexPath) {
 
         if editingPhotos {
@@ -227,6 +230,12 @@ class VTCollectionViewController : UIViewController,UICollectionViewDelegate,UIC
 
     // MARK: Helper methods
     
+    func displayError(_ error:String?) {
+        DispatchQueue.main.async {
+            self.displayAlertWithOKButton(error, nil)
+        }
+    }
+    
     func setFlowLayoutForVerticalOrientation() {
         if let _ = flowLayout {
             flowLayout.itemSize = CGSize(width: cellWidthAndHeightForVerticalOrientation, height: cellWidthAndHeightForVerticalOrientation)
@@ -238,23 +247,17 @@ class VTCollectionViewController : UIViewController,UICollectionViewDelegate,UIC
             flowLayout.itemSize = CGSize(width: cellWidthAndHeightForHorizontalOrientation, height: cellWidthAndHeightForHorizontalOrientation)
         }
     }
-    
-    // TODO: Abstract this duplicate code into a VTViewController
-
 }
 
-
-// MARK: - CoreDataTableViewController: NSFetchedResultsControllerDelegate
+// MARK: - NSFetchedResultsControllerDelegate methods that will be used to automatically update our collectionview
 
 extension VTCollectionViewController: NSFetchedResultsControllerDelegate {
     
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        print("Collection view content will change")
         blockOperations.removeAll(keepingCapacity: false)
     }
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
-        print("Collection view section(s) - modifying")
         let set = IndexSet(integer: sectionIndex)
         
         switch (type) {
@@ -288,10 +291,8 @@ extension VTCollectionViewController: NSFetchedResultsControllerDelegate {
     }
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
-        print("Collection view cell(s) - modifying - Type: \(type)")
         switch(type) {
         case .insert:
-            print("Inserting")
             blockOperations.append(
                 BlockOperation(block: { [weak self] in
                     if let this = self {
@@ -300,7 +301,6 @@ extension VTCollectionViewController: NSFetchedResultsControllerDelegate {
                 })
             )
         case .delete:
-            print("Deleting")
             blockOperations.append(
                 BlockOperation(block: { [weak self] in
                     if let this = self {
@@ -309,7 +309,6 @@ extension VTCollectionViewController: NSFetchedResultsControllerDelegate {
                 })
             )
         case .update:
-            print("Updating")
             blockOperations.append(
                 BlockOperation(block: { [weak self] in
                     if let this = self {
@@ -318,7 +317,6 @@ extension VTCollectionViewController: NSFetchedResultsControllerDelegate {
                 })
             )
         case .move:
-            print("Moving")
             blockOperations.append(
                 BlockOperation(block: { [weak self] in
                     if let this = self {
@@ -330,7 +328,6 @@ extension VTCollectionViewController: NSFetchedResultsControllerDelegate {
     }
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        print("Collection view content did change")
         collectionView!.performBatchUpdates({ () -> Void in
             for operation: BlockOperation in self.blockOperations {
                 operation.start()
