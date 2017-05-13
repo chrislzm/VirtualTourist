@@ -149,12 +149,26 @@
                                     <action selector="getNewPhotos:" destination="keC-km-QxW" eventType="touchUpInside" id="Ds8-P3-GfD"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" alpha="0.0" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tap Photo to Remove" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yy3-gP-uMW">
+                                <rect key="frame" x="0.0" y="602" width="375" height="65"/>
+                                <color key="backgroundColor" red="1" green="0.0" blue="0.037429042760000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="65" id="SpU-LC-s2u"/>
+                                    <constraint firstAttribute="height" constant="65" id="z79-9F-xR1"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="5FR-Gs-SYA" firstAttribute="height" secondItem="uqc-DS-G3P" secondAttribute="height" multiplier="1:5" id="Aa0-up-IHF"/>
+                            <constraint firstAttribute="trailing" secondItem="yy3-gP-uMW" secondAttribute="trailing" id="DvV-Xu-JMY"/>
+                            <constraint firstItem="yy3-gP-uMW" firstAttribute="leading" secondItem="uqc-DS-G3P" secondAttribute="leading" id="IID-Kb-jVe"/>
                             <constraint firstItem="5FR-Gs-SYA" firstAttribute="top" secondItem="ClN-pq-v9f" secondAttribute="bottom" id="K4U-Pc-T4k"/>
                             <constraint firstItem="7V0-xs-HSi" firstAttribute="top" secondItem="5FR-Gs-SYA" secondAttribute="bottom" id="K8F-KY-J8P"/>
+                            <constraint firstItem="wnP-CN-Opb" firstAttribute="top" secondItem="yy3-gP-uMW" secondAttribute="bottom" id="N46-ni-stY"/>
                             <constraint firstItem="5FR-Gs-SYA" firstAttribute="leading" secondItem="uqc-DS-G3P" secondAttribute="leading" id="Q2D-JM-WIC"/>
                             <constraint firstItem="6Bw-EU-Duw" firstAttribute="leading" secondItem="uqc-DS-G3P" secondAttribute="leading" id="SFK-n1-xVf"/>
                             <constraint firstItem="7V0-xs-HSi" firstAttribute="leading" secondItem="uqc-DS-G3P" secondAttribute="leading" id="Wc6-ME-1x9"/>
@@ -170,6 +184,7 @@
                         <outlet property="flowLayout" destination="6gH-Ht-4Vg" id="XMX-sX-Ytj"/>
                         <outlet property="getNewPhotosButton" destination="6Bw-EU-Duw" id="EJg-Y8-tO5"/>
                         <outlet property="mapView" destination="5FR-Gs-SYA" id="oZF-Yd-phJ"/>
+                        <outlet property="tapPhotoToRemoveLabel" destination="yy3-gP-uMW" id="ITd-iQ-dOD"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="BxS-as-NLx" userLabel="First Responder" sceneMemberID="firstResponder"/>

@@ -16,10 +16,8 @@ class VTCollectionViewController : UIViewController,UICollectionViewDelegate,UIC
     var pin:Pin?
     var fetchedResultsController : NSFetchedResultsController<NSFetchRequestResult>?
     var blockOperations = [BlockOperation]()
-    var selectedCellsToDelete = Set<VTCollectionViewCell>()
-    let DEFAULT_PHOTO_ALPHA:CGFloat = 1.0
-    let SELECTED_PHOTO_ALPHA:CGFloat = 0.3
-    var removePhotosButton:UIBarButtonItem?
+    var editPhotosButton:UIBarButtonItem?
+    var editingPhotos = false
     
     // MARK: Properties for flow layout
     private let cellsPerRow:CGFloat = 3.0
@@ -33,14 +31,13 @@ class VTCollectionViewController : UIViewController,UICollectionViewDelegate,UIC
     @IBOutlet weak var flowLayout: UICollectionViewFlowLayout!
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var getNewPhotosButton: UIButton!
+    @IBOutlet weak var tapPhotoToRemoveLabel: UILabel!
     
     // MARK: Actions
     @IBAction func getNewPhotos(_ sender: Any) {
 
         // Disable until photos are done loading photos
         disablePhotoButtons()
-        
-        clearSelection()
         
         VTModel.sharedInstance().getNewPhotosFor(pin!, fetchedResultsController!) { (error) in
             DispatchQueue.main.async {
@@ -53,60 +50,46 @@ class VTCollectionViewController : UIViewController,UICollectionViewDelegate,UIC
         }
     }
 
+    func hideTapToRemovePhotoLabel() {
+        tapPhotoToRemoveLabel.fadeOut()
+        tapPhotoToRemoveLabel.isHidden = true
+    }
+    
+    func showTapToRemovePhotoLabel() {
+        tapPhotoToRemoveLabel.fadeIn()
+        tapPhotoToRemoveLabel.isHidden = false
+    }
+    
+    func hideGetNewPhotosButton() {
+        getNewPhotosButton.fadeOut()
+        getNewPhotosButton.isHidden = true
+    }
+    func showGetNewPhotosButton() {
+        getNewPhotosButton.fadeIn()
+        getNewPhotosButton.isHidden = false
+    }
+    
     func disablePhotoButtons() {
         getNewPhotosButton.isEnabled = false
-        removePhotosButton!.isEnabled = false
-        // Manually color the button (doesn't do this automatically when we disable the button)
-        removePhotosButton!.setTitleTextAttributes([NSForegroundColorAttributeName:UIColor.lightGray], for: .normal)
+        editPhotosButton!.isEnabled = false
     }
     
     func enablePhotoButtons() {
         getNewPhotosButton.isEnabled = true
-        removePhotosButton!.isEnabled = true
-        removePhotosButton!.setTitleTextAttributes([NSForegroundColorAttributeName:UIColor.red], for: .normal)
-    }
-    
-    func clearSelection() {
-        hideRemovePhotosButton()
-        
-        while !selectedCellsToDelete.isEmpty {
-            let cell = selectedCellsToDelete.removeFirst()
-            cell.photoImageView.alpha = DEFAULT_PHOTO_ALPHA
-        }
-    
-    }
-    
-    func showRemovePhotosButton() {
-        navigationItem.rightBarButtonItem = removePhotosButton
-    }
-    
-    func hideRemovePhotosButton() {
-        navigationItem.rightBarButtonItem = nil
-    }
-    
-    func removePhotosButtonIsVisible() -> Bool {
-        return navigationItem.rightBarButtonItem != nil
+        editPhotosButton!.isEnabled = true
     }
     
     func removePhotos() {
-
-        while !selectedCellsToDelete.isEmpty {
-            
-            let cell = selectedCellsToDelete.removeFirst()
-            let photo = cell.photo!
-            
-            VTModel.sharedInstance().deletePhoto(photo,fetchedResultsController!) { (error) in
-                DispatchQueue.main.async {
-                    // Restore image alpha settings
-                    cell.photoImageView.alpha = self.DEFAULT_PHOTO_ALPHA
-                    guard error == nil else {
-                        self.displayAlertWithOKButton("Error removing photo", error!)
-                        return
-                    }
-                }
-            }
-            
-            hideRemovePhotosButton()
+        if editingPhotos {
+            editingPhotos = false
+            editPhotosButton!.title = "Edit"
+            hideTapToRemovePhotoLabel()
+            showGetNewPhotosButton()
+            } else {
+            editingPhotos = true
+            editPhotosButton!.title = "Finish"
+            showTapToRemovePhotoLabel()
+            hideGetNewPhotosButton()
         }
     }
     
@@ -132,10 +115,11 @@ class VTCollectionViewController : UIViewController,UICollectionViewDelegate,UIC
         fetchedResultsController?.delegate = self
         
         // Setup the remove photos button
-        removePhotosButton = UIBarButtonItem(title: "Remove Photos", style: UIBarButtonItemStyle.plain, target:self, action: #selector(VTCollectionViewController.removePhotos))
-        removePhotosButton!.setTitleTextAttributes([NSForegroundColorAttributeName:UIColor.red], for: .normal)
+        editPhotosButton = UIBarButtonItem(title: "Edit", style: UIBarButtonItemStyle.plain, target:self, action: #selector(VTCollectionViewController.removePhotos))
 
-        // Disable get and remove photo buttons while we're loading photos
+        navigationItem.rightBarButtonItem = editPhotosButton
+
+        // Disable get and edit photo buttons while we're loading photos
         disablePhotoButtons()
         
         VTModel.sharedInstance().loadImagesFor(fetchedResultsController!) { (error) in
@@ -199,29 +183,13 @@ class VTCollectionViewController : UIViewController,UICollectionViewDelegate,UIC
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath:IndexPath) {
 
-        // Get the cell
-        let cell = collectionView.cellForItem(at: indexPath) as! VTCollectionViewCell
-
-        // If the cell has finished loading (has a photo loaded into it)
-        if cell.photoImageView.image != nil {
-            
-            // If it's been selected already, deselect it
-            if selectedCellsToDelete.contains(cell) {
-                selectedCellsToDelete.remove(cell)
-                cell.photoImageView.alpha = 1
-                // If no more items selected, remove the delete option
-                if selectedCellsToDelete.isEmpty {
-                    hideRemovePhotosButton()
-                }
-            } else {
-                // Otherwise select the cell
-                selectedCellsToDelete.insert(cell)
-                cell.photoImageView.alpha = SELECTED_PHOTO_ALPHA
-                
-                // If the delete option is not available on the UI, make it visible
-                if !removePhotosButtonIsVisible() {
-                    showRemovePhotosButton()
-                }
+        if editingPhotos {
+            // Get the cell
+            let cell = collectionView.cellForItem(at: indexPath) as! VTCollectionViewCell
+            // If the cell has finished loading (has a photo loaded into it)
+            if cell.photoImageView.image != nil {
+                let photo = cell.photo!
+                VTModel.sharedInstance().deletePhoto(photo)
             }
         }
     }
