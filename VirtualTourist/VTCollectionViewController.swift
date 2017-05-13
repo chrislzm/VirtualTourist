@@ -36,14 +36,14 @@ class VTCollectionViewController : UIViewController,UICollectionViewDelegate,UIC
     // MARK: Actions
     @IBAction func getNewPhotos(_ sender: Any) {
 
-        // Disable until photos are done loading photos
+        // Disable photo-related buttons until photos are done loading
         disablePhotoButtons()
         
-        // 1. Remove photos from model
+        // 1. Remove our photos from the model
         let photosToRemove = fetchedResultsController?.fetchedObjects as! [Photo]
         VTModel.sharedInstance().deleteAll(photosToRemove)
         
-        // 2. Load new page of photo URLs for the pin
+        // 2. Load new page of photo URLs for our pin into the model
         VTModel.sharedInstance().loadNewPhotosFor(pin!) { (error) in
             
             // TODO: Abstract this method
@@ -55,10 +55,10 @@ class VTCollectionViewController : UIViewController,UICollectionViewDelegate,UIC
                 }
             }
             
-            // 3. Get the new photos
+            // 3. Get the new photos from the model
             let newPhotos = self.fetchedResultsController?.fetchedObjects as! [Photo]
             
-            // 3. Download the images
+            // 4. Tell the model to download the photo image data
             VTModel.sharedInstance().loadImagesFor(newPhotos) { (error) in
                 DispatchQueue.main.async {
                     self.enablePhotoButtons()
@@ -119,29 +119,28 @@ class VTCollectionViewController : UIViewController,UICollectionViewDelegate,UIC
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Add the coordinate as an annotation to the map
+        // Add the pin as an annotation to the map
         let annotation = MKPointAnnotation()
         let coordinate = CLLocationCoordinate2D(latitude: pin!.latitude, longitude: pin!.longitude)
         annotation.coordinate = coordinate
         mapView.addAnnotation(annotation)
         
-        // Set the MapView to a 1km * 1km box around the geocoded location
+        // Set our MapView to a 1km * 1km box around the geocoded location
         let viewRegion = MKCoordinateRegionMakeWithDistance(coordinate, 1000, 1000);
         mapView.setRegion(viewRegion, animated: true)
 
-        // Setup the edit photos button
+        // Setup the Edit button
         editPhotosButton = UIBarButtonItem(title: "Edit", style: UIBarButtonItemStyle.plain, target:self, action: #selector(VTCollectionViewController.removePhotos))
-        
         navigationItem.rightBarButtonItem = editPhotosButton
         
-        // Disable get and edit photo buttons (we're still loading photos into the view)
+        // Disable photo-related buttons until we're done loading everything
         disablePhotoButtons()
 
-        // Get the Fetch Results Controller for this pin
+        // Get a Fetch Results Controller containing this pin's photos
         fetchedResultsController = VTModel.sharedInstance().createFrcFor(pin!)
         fetchedResultsController?.delegate = self
         
-        // Get the photos, if any
+        // Get the fetched photos, if any
         if let photos = fetchedResultsController?.fetchedObjects as? [Photo] {
             VTModel.sharedInstance().loadImagesFor(photos) { (error) in
                 DispatchQueue.main.async {
@@ -157,6 +156,7 @@ class VTCollectionViewController : UIViewController,UICollectionViewDelegate,UIC
         }
     }
     
+    // Sets up flow layout, accounting for screen rotation
     override func viewWillAppear(_ animated: Bool) {
         // Setup flowLayout
         flowLayout.minimumInteritemSpacing = cellSpacing
@@ -192,7 +192,7 @@ class VTCollectionViewController : UIViewController,UICollectionViewDelegate,UIC
         // Save the photo in the cell so we can easily delete the photo later if we need to
         cell.photo = photo
         
-        // If the photo image data is available
+        // If the photo image data is available, display it
         if let binaryPhoto = photo.imageData {
             cell.photoImageView.image = UIImage(data: binaryPhoto as Data)
             cell.stopLoadingAnimation()
@@ -208,11 +208,11 @@ class VTCollectionViewController : UIViewController,UICollectionViewDelegate,UIC
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath:IndexPath) {
 
         if editingPhotos {
-            // Get the cell
             let cell = collectionView.cellForItem(at: indexPath) as! VTCollectionViewCell
-            // If the cell has finished loading (has a photo loaded into it)
-            if cell.photoImageView.image != nil {
-                let photo = cell.photo!
+            let photo = cell.photo!
+
+            // Check first that photo has completely finished loading
+            if photo.imageData != nil {
                 VTModel.sharedInstance().deletePhoto(photo)
             }
         }
@@ -235,7 +235,7 @@ class VTCollectionViewController : UIViewController,UICollectionViewDelegate,UIC
     
     // TODO: Abstract this duplicate code into a VTViewController
     // Displays an alert with a single OK button, takes a title and message as arguemnts
-    func displayAlertWithOKButton(_ title: String, _ message: String) {
+    func displayAlertWithOKButton(_ title: String?, _ message: String?) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.alert)
         alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
         present(alert, animated: true, completion: nil)
