@@ -10,7 +10,12 @@ import UIKit
 
 class VTCollectionViewCell : UICollectionViewCell {
     
-    @IBOutlet weak var photo: UIImageView!
+    // MARK: Properites
+    var photo:Photo?
+    
+    // MARK: Outlets
+    
+    @IBOutlet weak var photoImageView: UIImageView!
     @IBOutlet weak var activityView: UIActivityIndicatorView!
     
     // MARK: Activity View Indicator methods
