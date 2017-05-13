@@ -17,7 +17,8 @@ class VTCollectionViewController : UIViewController,UICollectionViewDelegate,UIC
     var fetchedResultsController : NSFetchedResultsController<NSFetchRequestResult>?
     var blockOperations = [BlockOperation]()
     var selectedCellsToDelete = Set<VTCollectionViewCell>()
-    let SELECTED_PHOTO_ALPHA:CGFloat = 0.3 // Indicates a photo is selected by the user
+    let DEFAULT_PHOTO_ALPHA:CGFloat = 1.0
+    let SELECTED_PHOTO_ALPHA:CGFloat = 0.3
     var removePhotosButton:UIBarButtonItem?
     
     // MARK: Properties for flow layout
@@ -70,7 +71,7 @@ class VTCollectionViewController : UIViewController,UICollectionViewDelegate,UIC
         
         while !selectedCellsToDelete.isEmpty {
             let cell = selectedCellsToDelete.removeFirst()
-            cell.photoImageView.alpha = 1.0
+            cell.photoImageView.alpha = DEFAULT_PHOTO_ALPHA
         }
     
     }
@@ -88,7 +89,25 @@ class VTCollectionViewController : UIViewController,UICollectionViewDelegate,UIC
     }
     
     func removePhotos() {
-        print("Delete photos here")
+
+        while !selectedCellsToDelete.isEmpty {
+            
+            let cell = selectedCellsToDelete.removeFirst()
+            let photo = cell.photo!
+            
+            VTModel.sharedInstance().deletePhoto(photo,fetchedResultsController!) { (error) in
+                DispatchQueue.main.async {
+                    // Restore image alpha settings
+                    cell.photoImageView.alpha = self.DEFAULT_PHOTO_ALPHA
+                    guard error == nil else {
+                        self.displayAlertWithOKButton("Error removing photo", error!)
+                        return
+                    }
+                }
+            }
+            
+            hideRemovePhotosButton()
+        }
     }
     
     // MARK: Lifecycle
