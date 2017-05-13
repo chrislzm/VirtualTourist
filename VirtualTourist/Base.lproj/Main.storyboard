@@ -31,18 +31,38 @@
                                     <outletCollection property="gestureRecognizers" destination="pKg-jT-D2u" appends="YES" id="FcZ-3a-GGB"/>
                                 </connections>
                             </mapView>
+                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tap Pin to Delete" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IBV-7V-z59">
+                                <rect key="frame" x="0.0" y="602" width="375" height="65"/>
+                                <color key="backgroundColor" red="1" green="0.0" blue="0.03742904276491732" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="65" id="f61-wg-7tH"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="mcP-3v-jvC" secondAttribute="bottom" id="CkW-aU-IDC"/>
                             <constraint firstItem="mcP-3v-jvC" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="NWY-FQ-nuL"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="IBV-7V-z59" secondAttribute="bottom" id="UfZ-At-p5B"/>
+                            <constraint firstAttribute="trailing" secondItem="IBV-7V-z59" secondAttribute="trailing" id="Y8q-0z-Nmi"/>
                             <constraint firstAttribute="trailing" secondItem="mcP-3v-jvC" secondAttribute="trailing" id="Zcx-v8-98A"/>
                             <constraint firstItem="mcP-3v-jvC" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="Zl8-c7-n4S"/>
+                            <constraint firstItem="IBV-7V-z59" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="ceE-4u-DF5"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Virtual Tourist" id="IaC-yC-f70"/>
+                    <navigationItem key="navigationItem" title="Virtual Tourist" id="IaC-yC-f70">
+                        <barButtonItem key="rightBarButtonItem" title="Edit" id="Zoe-hf-uly">
+                            <connections>
+                                <action selector="editButtonPressed:" destination="BYZ-38-t0r" id="vT1-6g-3Gj"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="mapView" destination="mcP-3v-jvC" id="Saf-em-rco"/>
+                        <outlet property="tapPinToDeleteLabel" destination="IBV-7V-z59" id="tzc-Ud-Qs3"/>
                         <segue destination="keC-km-QxW" kind="show" identifier="showPinCollection" id="z0c-kW-YIa"/>
                     </connections>
                 </viewController>

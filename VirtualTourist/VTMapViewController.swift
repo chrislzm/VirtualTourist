@@ -17,7 +17,12 @@ class VTMapViewController: UIViewController, MKMapViewDelegate {
     
     // MARK: Outlets
     @IBOutlet weak var mapView: MKMapView!
+    @IBOutlet weak var tapPinToDeleteLabel: UILabel!
 
+    @IBAction func editButtonPressed(_ sender: Any) {
+        
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
