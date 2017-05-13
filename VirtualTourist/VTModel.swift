@@ -11,25 +11,25 @@ import CoreData
 
 class VTModel {
     
+    // MARK: Properties
+    var fetchedResultsController : NSFetchedResultsController<NSFetchRequestResult>?
+    
     func createNewPin(lat:Double, long:Double) -> Pin  {
-        // Get the stack
-        let delegate = UIApplication.shared.delegate as! AppDelegate
-        let stack = delegate.stack
+
+        let coreDataStack = getCoreDataStack()
         
         // Create new pin
-        let newPin = Pin(lat: lat,long: long,context: stack.context)
+        let newPin = Pin(lat: lat,long: long,context: coreDataStack.context)
         
         // Save the pin
-        stack.save()
+        coreDataStack.save()
         
         return newPin
     }
     
     func loadNewPhotoURLsFor(_ pin: Pin, completionHandler: @escaping (_ error: String?) -> Void) {
         
-        // Get the stack
-        let delegate = UIApplication.shared.delegate as! AppDelegate
-        let stack = delegate.stack
+        let coreDataStack = getCoreDataStack()
         
         // If we have more pages we can get, set to the next page
         if (pin.photosPageNum < pin.photosTotalPages) {
@@ -57,12 +57,12 @@ class VTModel {
             if photoURLs.count > 0 {
                 // Create model objects for each photo, and attach it to the pin
                 for photoURL in photoURLs {
-                    let newPhoto = Photo(url: photoURL, context: stack.context)
+                    let newPhoto = Photo(url: photoURL, context: coreDataStack.context)
                     newPhoto.pin = pin
                     print("Added photoURL into Pin! \(photoURL)")
                 }
                 // Save the URLs
-                stack.save()
+                coreDataStack.save()
                 
                 completionHandler(nil)
             } else {
@@ -74,9 +74,7 @@ class VTModel {
     
     func getSavedPins() -> [Pin]? {
         
-        // Get the stack
-        let delegate = UIApplication.shared.delegate as! AppDelegate
-        let stack = delegate.stack
+        let coreDataStack = getCoreDataStack()
         
         // Create a fetchrequest
         let fr = NSFetchRequest<NSFetchRequestResult>(entityName: "Pin")
@@ -84,7 +82,7 @@ class VTModel {
         // Execute the request
         var results:[Any]?
         do {
-            results = try stack.context.fetch(fr)
+            results = try coreDataStack.context.fetch(fr)
         } catch {
             fatalError("Error retrieving saved pins")
         }
@@ -97,10 +95,8 @@ class VTModel {
     }
     
     func getFrcFor(_ pin: Pin) -> NSFetchedResultsController<NSFetchRequestResult> {
-        
-        // Get the stack
-        let delegate = UIApplication.shared.delegate as! AppDelegate
-        let stack = delegate.stack
+
+        let coreDataStack = getCoreDataStack()
         
         // Create Fetch Request
         let fr = NSFetchRequest<NSFetchRequestResult>(entityName: "Photo")
@@ -110,17 +106,23 @@ class VTModel {
         let pred = NSPredicate(format: "pin = %@", argumentArray: [pin])
         fr.predicate = pred
         
-        // Create FetchedResultsController
-        let frc = NSFetchedResultsController(fetchRequest: fr, managedObjectContext:stack.context, sectionNameKeyPath: nil, cacheName: nil)
+        // Create and save reference to FetchedResultsController
+        fetchedResultsController = NSFetchedResultsController(fetchRequest: fr, managedObjectContext:coreDataStack.context, sectionNameKeyPath: nil, cacheName: nil)
         
         do {
-            try frc.performFetch()
+            try fetchedResultsController!.performFetch()
         } catch let e as NSError {
-            print("Error while trying to perform a search: \n\(e)\n\(frc)")
+            print("Error while trying to perform a search: \n\(e)\n\(String(describing: fetchedResultsController))")
         }
 
-        // Return the FetchedResultsController
-        return frc
+        // Return reference to the FetchedResultsController
+        return fetchedResultsController!
+    }
+
+    // Returns the Core Data Stack
+    func getCoreDataStack() -> CoreDataStack {
+        let delegate = UIApplication.shared.delegate as! AppDelegate
+        return delegate.stack
     }
     
     func loadImagesFor(_ frc:NSFetchedResultsController<NSFetchRequestResult>) {
