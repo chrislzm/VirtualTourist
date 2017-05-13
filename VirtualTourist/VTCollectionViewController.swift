@@ -13,11 +13,10 @@ import CoreData
 class VTCollectionViewController : UIViewController,UICollectionViewDelegate,UICollectionViewDataSource {
     
     // MARK: Properties
-    var pin:Pin?
+    var pin:Pin? // Stores the pin whose collection we are displaying
     var fetchedResultsController : NSFetchedResultsController<NSFetchRequestResult>?
-    var blockOperations = [BlockOperation]()
-    var editPhotosButton:UIBarButtonItem?
-    var editingPhotos = false
+    var blockOperations = [BlockOperation]() // Stores operations for CollectView performBatchUpdates method
+    var editingPhotos = false // True when "edit" mode has been enabled by user (and photos can be removed)
     
     // MARK: Properties for flow layout
     private let cellsPerRow:CGFloat = 3.0
@@ -26,25 +25,27 @@ class VTCollectionViewController : UIViewController,UICollectionViewDelegate,UIC
     private var cellWidthAndHeightForVerticalOrientation:CGFloat!
     private var cellWidthAndHeightForHorizontalOrientation:CGFloat!
 
-    // MARK: Outlets
+    // MARK: Outlets, UI Objects
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var flowLayout: UICollectionViewFlowLayout!
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var getNewPhotosButton: UIButton!
     @IBOutlet weak var tapPhotoToRemoveLabel: UILabel!
     @IBOutlet weak var noPhotosHereLabel: UILabel!
+    var editPhotosButton:UIBarButtonItem?
     
     // MARK: Actions
-    @IBAction func getNewPhotos(_ sender: Any) {
 
-        // Disable photo-related buttons until photos are done loading
+    @IBAction func getNewPhotosButtonPressed(_ sender: Any) {
+
+        // 1. Disable photo-related buttons until photos are done loading
         disablePhotoButtons()
         
-        // 1. Remove our photos from the model
+        // 2. Remove our photos from the model
         let photosToRemove = fetchedResultsController?.fetchedObjects as! [Photo]
         VTModel.sharedInstance().deleteAll(photosToRemove)
         
-        // 2. Load new page of photo URLs for our pin into the model
+        // 3. Load new page of photo URLs for our pin into the model
         VTModel.sharedInstance().loadNewPhotosFor(pin!) { (error) in
             
             // TODO: Abstract this method
@@ -56,10 +57,10 @@ class VTCollectionViewController : UIViewController,UICollectionViewDelegate,UIC
                 }
             }
             
-            // 3. Get the new photos from the model
+            // 4. Get the new photos from the model
             let newPhotos = self.fetchedResultsController?.fetchedObjects as! [Photo]
             
-            // 4. Tell the model to download the photo image data
+            // 5. Tell the model to download the photo image data
             VTModel.sharedInstance().loadImagesFor(newPhotos) { (error) in
                 DispatchQueue.main.async {
                     self.enablePhotoButtons()

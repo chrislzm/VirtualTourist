@@ -146,7 +146,7 @@
                                 <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="20"/>
                                 <state key="normal" title="Get New Photos"/>
                                 <connections>
-                                    <action selector="getNewPhotos:" destination="keC-km-QxW" eventType="touchUpInside" id="Ds8-P3-GfD"/>
+                                    <action selector="getNewPhotosButtonPressed:" destination="keC-km-QxW" eventType="touchUpInside" id="j4u-ma-mWo"/>
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" alpha="0.0" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tap Photo to Remove" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yy3-gP-uMW">
