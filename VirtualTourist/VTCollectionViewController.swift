@@ -39,13 +39,34 @@ class VTCollectionViewController : UIViewController,UICollectionViewDelegate,UIC
         // Disable until photos are done loading photos
         disablePhotoButtons()
         
-        VTModel.sharedInstance().getNewPhotosFor(pin!, fetchedResultsController!) { (error) in
+        // 1. Remove photos from model
+        let photosToRemove = fetchedResultsController?.fetchedObjects as! [Photo]
+        VTModel.sharedInstance().deleteAll(photosToRemove)
+        
+        // 2. Load new page of photo URLs for the pin
+        VTModel.sharedInstance().loadNewPhotosFor(pin!) { (error) in
+            
+            // TODO: Abstract this method
             DispatchQueue.main.async {
+                self.enablePhotoButtons()
                 guard error == nil else {
                     self.displayAlertWithOKButton("Error getting new photos", error!)
                     return
                 }
-                self.enablePhotoButtons()
+            }
+            
+            // 3. Get the new photos
+            let newPhotos = self.fetchedResultsController?.fetchedObjects as! [Photo]
+            
+            // 3. Download the images
+            VTModel.sharedInstance().loadImagesFor(newPhotos) { (error) in
+                DispatchQueue.main.async {
+                    self.enablePhotoButtons()
+                    guard error == nil else {
+                        self.displayAlertWithOKButton("Error getting new photos", error!)
+                        return
+                    }
+                }
             }
         }
     }
@@ -107,29 +128,32 @@ class VTCollectionViewController : UIViewController,UICollectionViewDelegate,UIC
         // Set the MapView to a 1km * 1km box around the geocoded location
         let viewRegion = MKCoordinateRegionMakeWithDistance(coordinate, 1000, 1000);
         mapView.setRegion(viewRegion, animated: true)
+
+        // Setup the edit photos button
+        editPhotosButton = UIBarButtonItem(title: "Edit", style: UIBarButtonItemStyle.plain, target:self, action: #selector(VTCollectionViewController.removePhotos))
         
-        // Create Fetch Request Controller for this Pin by calling the model with the coordinates, it should return FRC to us, then we should use that to display everything...
+        navigationItem.rightBarButtonItem = editPhotosButton
         
+        // Disable get and edit photo buttons (we're still loading photos into the view)
+        disablePhotoButtons()
+
+        // Get the Fetch Results Controller for this pin
         fetchedResultsController = VTModel.sharedInstance().createFrcFor(pin!)
-        
         fetchedResultsController?.delegate = self
         
-        // Setup the remove photos button
-        editPhotosButton = UIBarButtonItem(title: "Edit", style: UIBarButtonItemStyle.plain, target:self, action: #selector(VTCollectionViewController.removePhotos))
-
-        navigationItem.rightBarButtonItem = editPhotosButton
-
-        // Disable get and edit photo buttons while we're loading photos
-        disablePhotoButtons()
-        
-        VTModel.sharedInstance().loadImagesFor(fetchedResultsController!) { (error) in
-            DispatchQueue.main.async {
-                guard error == nil else {
-                    self.displayAlertWithOKButton("Error getting new photos", error!)
-                    return
+        // Get the photos, if any
+        if let photos = fetchedResultsController?.fetchedObjects as? [Photo] {
+            VTModel.sharedInstance().loadImagesFor(photos) { (error) in
+                DispatchQueue.main.async {
+                    guard error == nil else {
+                        self.displayAlertWithOKButton("Error getting new photos", error!)
+                        return
+                    }
+                    self.enablePhotoButtons()
                 }
-                self.enablePhotoButtons()
             }
+        } else {
+            displayAlertWithOKButton("", "No photos found at this location")
         }
     }
     
