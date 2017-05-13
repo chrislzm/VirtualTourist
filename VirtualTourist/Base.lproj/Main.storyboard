@@ -147,6 +147,7 @@
                     <connections>
                         <outlet property="collectionView" destination="7V0-xs-HSi" id="DKC-gi-RDp"/>
                         <outlet property="flowLayout" destination="6gH-Ht-4Vg" id="XMX-sX-Ytj"/>
+                        <outlet property="getNewPhotosButton" destination="6Bw-EU-Duw" id="EJg-Y8-tO5"/>
                         <outlet property="mapView" destination="5FR-Gs-SYA" id="oZF-Yd-phJ"/>
                     </connections>
                 </viewController>
