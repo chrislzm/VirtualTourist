@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A5432D611EC6B6100080E5D5 /* VTViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5432D601EC6B6100080E5D5 /* VTViewExtensions.swift */; };
 		A5E7BDC11EC4308B00C62CE0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E7BDC01EC4308B00C62CE0 /* AppDelegate.swift */; };
 		A5E7BDC31EC4308B00C62CE0 /* VTMapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E7BDC21EC4308B00C62CE0 /* VTMapViewController.swift */; };
 		A5E7BDC61EC4308B00C62CE0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A5E7BDC41EC4308B00C62CE0 /* Main.storyboard */; };
@@ -28,6 +29,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		A5432D601EC6B6100080E5D5 /* VTViewExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VTViewExtensions.swift; path = VirtualTourist/VTViewExtensions.swift; sourceTree = "<group>"; };
 		A5E7BDBD1EC4308B00C62CE0 /* VirtualTourist.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VirtualTourist.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A5E7BDC01EC4308B00C62CE0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = VirtualTourist/AppDelegate.swift; sourceTree = "<group>"; };
 		A5E7BDC21EC4308B00C62CE0 /* VTMapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VTMapViewController.swift; sourceTree = "<group>"; };
@@ -116,6 +118,7 @@
 				A5E7BDC71EC4308B00C62CE0 /* Assets.xcassets */,
 				A5E7BDC91EC4308B00C62CE0 /* LaunchScreen.storyboard */,
 				A5E7BDC41EC4308B00C62CE0 /* Main.storyboard */,
+				A5432D601EC6B6100080E5D5 /* VTViewExtensions.swift */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -199,6 +202,7 @@
 				A5F1A1331EC522AE00A67848 /* Photo+CoreDataClass.swift in Sources */,
 				A5F1A1361EC522AE00A67848 /* Pin+CoreDataProperties.swift in Sources */,
 				A5F1A1461EC57D4600A67848 /* VTExtensions.swift in Sources */,
+				A5432D611EC6B6100080E5D5 /* VTViewExtensions.swift in Sources */,
 				A5F1A1401EC541CF00A67848 /* VTNetClient.swift in Sources */,
 				A5F1A1351EC522AE00A67848 /* Pin+CoreDataClass.swift in Sources */,
 				A5F1A1421EC541CF00A67848 /* VTNetConvenience.swift in Sources */,
