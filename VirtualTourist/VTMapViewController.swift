@@ -118,20 +118,10 @@ class VTMapViewController: UIViewController, MKMapViewDelegate {
         }
     }
     
-    
     // Send the pin to the collection view
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let controller = segue.destination as! VTCollectionViewController
         controller.pin = selectedPin
-    }
-    
-    // MARK: Helper methods
-    
-    // Displays an alert with a single OK button, takes a title and message as arguemnts
-    func displayAlertWithOKButton(_ title: String, _ message: String) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.alert)
-        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
-        present(alert, animated: true, completion: nil)
     }
 }
 
