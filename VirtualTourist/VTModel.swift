@@ -123,7 +123,7 @@ class VTModel {
     }
     
     // Deletes existing photos and loads new photos in a given a pin and its fetched results controller
-    func getNewPhotosFor (_ pin:Pin, _ frc:NSFetchedResultsController<NSFetchRequestResult>, errorHandler: @escaping (_ error: String?) -> Void) {
+    func getNewPhotosFor (_ pin:Pin, _ frc:NSFetchedResultsController<NSFetchRequestResult>, completionHandler: @escaping (_ error: String?) -> Void) {
         print("1. Deleting all photos")
         
         // 1. Delete all photos
@@ -143,16 +143,17 @@ class VTModel {
         // 2. Load new photo URLs
         VTModel.sharedInstance().loadNewPhotoURLsFor(pin) { (error) in
             guard error == nil else {
-                errorHandler("Error loading new photo URLs")
+                completionHandler("Error loading new photo URLs")
                 return
             }
             
-            print("3. Loading new images")
+            print("3. Downloading new images")
             // 3. Load images
-            VTModel.sharedInstance().loadImagesFor(frc)
+            VTModel.sharedInstance().loadImagesFor(frc, completionHandler: completionHandler)
         }
     }
-    func loadImagesFor(_ frc:NSFetchedResultsController<NSFetchRequestResult>) {
+    
+    func loadImagesFor(_ frc:NSFetchedResultsController<NSFetchRequestResult>, completionHandler: @escaping (_ error: String?) -> Void) {
         
         // Get the stack
         let delegate = UIApplication.shared.delegate as! AppDelegate
@@ -174,6 +175,7 @@ class VTModel {
                     print("Image already in persistence")
                 }
             }
+            completionHandler(nil)
         }
     }
     
