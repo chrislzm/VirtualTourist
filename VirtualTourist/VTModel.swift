@@ -91,7 +91,7 @@ class VTModel {
         }
     }
     
-    func getFrcFor(_ pin: Pin) -> NSFetchedResultsController<NSFetchRequestResult> {
+    func createFrcFor(_ pin: Pin) -> NSFetchedResultsController<NSFetchRequestResult> {
 
         let coreDataStack = getCoreDataStack()
         
@@ -169,14 +169,12 @@ class VTModel {
     }
     
     func loadImagesFor(_ frc:NSFetchedResultsController<NSFetchRequestResult>, completionHandler: @escaping (_ error: String?) -> Void) {
-        
-        // Get the stack
-        let delegate = UIApplication.shared.delegate as! AppDelegate
-        let stack = delegate.stack
+
+        let coreDataStack = getCoreDataStack()
         
         let photos = frc.fetchedObjects as! [Photo]
         
-        stack.performBackgroundBatchOperation { (context) in
+        coreDataStack.performBackgroundBatchOperation { (context) in
             for photo in photos {
                 if photo.imageData == nil {
                     let imageURL = URL(string: photo.url!)

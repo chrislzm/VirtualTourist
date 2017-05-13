@@ -110,7 +110,7 @@ class VTCollectionViewController : UIViewController,UICollectionViewDelegate,UIC
         
         // Create Fetch Request Controller for this Pin by calling the model with the coordinates, it should return FRC to us, then we should use that to display everything...
         
-        fetchedResultsController = VTModel.sharedInstance().getFrcFor(pin!)
+        fetchedResultsController = VTModel.sharedInstance().createFrcFor(pin!)
         
         fetchedResultsController?.delegate = self
         
