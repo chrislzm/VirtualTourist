@@ -59,6 +59,26 @@ class VTMapViewController: UIViewController, MKMapViewDelegate {
         }
     }
     
+    // Setup annotation (pin) appearance and behavior on the MapView
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        
+        let reuseId = "pin"
+        
+        var pinView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseId) as? MKPinAnnotationView
+        
+        if pinView == nil {
+            pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
+            pinView!.pinTintColor = .red
+            pinView?.animatesDrop = true
+        }
+        else {
+            pinView!.annotation = annotation
+        }
+        
+        return pinView
+    }
+    
+    
     // Delegate method that respond to taps on pins
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         
