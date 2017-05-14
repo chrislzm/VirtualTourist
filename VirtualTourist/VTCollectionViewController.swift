@@ -12,7 +12,7 @@ import UIKit
 import MapKit
 import CoreData
 
-class VTCollectionViewController : UIViewController,UICollectionViewDelegate,UICollectionViewDataSource {
+class VTCollectionViewController : VTViewController,UICollectionViewDelegate,UICollectionViewDataSource {
     
     // MARK: Properties
     var pin:Pin? // Stores the pin whose collection we are displaying
@@ -42,8 +42,8 @@ class VTCollectionViewController : UIViewController,UICollectionViewDelegate,UIC
     // Downloads a new set of photos into the collection
     @IBAction func getNewPhotosButtonPressed(_ sender: Any) {
 
-        // 1. Disable photo-related buttons until photos are done loading
-        disablePhotoButtons()
+        // 1. Notifies controllers to disable user's ability to update the model until downloads complete
+        NotificationCenter.default.post(name: Notification.Name("willDownloadData"), object: nil)
         
         // 2. Remove our photos from the model
         let photosToRemove = fetchedResultsController?.fetchedObjects as! [Photo]
@@ -63,9 +63,9 @@ class VTCollectionViewController : UIViewController,UICollectionViewDelegate,UIC
                     return
                 }
                 
-                // 5. Now done loading photo images. Enable get photo/edit photos buttons.
+                // 5. Now done loading photo images. Notify controllers immediately.
                 DispatchQueue.main.async {
-                    self.enablePhotoButtons()
+                    NotificationCenter.default.post(name: Notification.Name("didDownloadData"), object: nil)
                 }
             }
         }
@@ -135,8 +135,8 @@ class VTCollectionViewController : UIViewController,UICollectionViewDelegate,UIC
         editPhotosButton = UIBarButtonItem(title: "Edit", style: UIBarButtonItemStyle.plain, target:self, action: #selector(VTCollectionViewController.toggleEditingPhotos))
         navigationItem.rightBarButtonItem = editPhotosButton
         
-        // Disable all photo-related buttons until we're done loading everything
-        disablePhotoButtons()
+        // Notifies controllers to disable user's ability to update the model until downloads complete
+        NotificationCenter.default.post(name: Notification.Name("willDownloadData"), object: nil)
 
         // If there are photos available at this location
         if pin!.photosTotalPages > 0 {
@@ -145,14 +145,17 @@ class VTCollectionViewController : UIViewController,UICollectionViewDelegate,UIC
             fetchedResultsController = VTModel.sharedInstance().createFrcFor(pin!)
             fetchedResultsController?.delegate = self
             
+            // Load the photo image data
             if let photos = fetchedResultsController?.fetchedObjects as? [Photo] {
                 VTModel.sharedInstance().loadImagesFor(photos) { (error) in
                     guard error == nil else {
                         self.displayErrorAlert(error)
                         return
                     }
+                    
+                    // Notify controllers we're done loading data and it's safe to modify the model
                     DispatchQueue.main.async {
-                        self.enablePhotoButtons()
+                        NotificationCenter.default.post(name: Notification.Name("didDownloadData"), object: nil)
                     }
                 }
             }
@@ -189,6 +192,20 @@ class VTCollectionViewController : UIViewController,UICollectionViewDelegate,UIC
             setFlowLayoutForVerticalOrientation()
         } else {
             setFlowLayoutForHorizontalOrientation()
+        }
+    }
+    
+    // MARK: Notification Response Methods
+    
+    override func willLoadFromNetwork(_ notification: Notification) {
+        super.willLoadFromNetwork(notification)
+        
+        disablePhotoButtons()
+    }
+    
+    override func didLoadFromNetwork(_ notification: Notification) {
+        if !downloadsActive {
+            enablePhotoButtons()
         }
     }
     
