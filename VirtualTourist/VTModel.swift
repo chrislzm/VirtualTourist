@@ -13,7 +13,6 @@ import CoreData
 
 class VTModel {
 
-
     // Creates new Pin object with given latitude and longitude, saves it to the model and returns it
     
     func createNewPin(lat:Double, long:Double) -> Pin  {
