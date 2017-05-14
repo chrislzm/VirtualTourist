@@ -2,6 +2,8 @@
 //  VTModel.swift
 //  VirtualTourist
 //
+//  Implements an interface to the model -- convenience methods used by the controller classes to access and manipulate the model.
+//
 //  Created by Chris Leung on 5/11/17.
 //  Copyright © 2017 Chris Leung. All rights reserved.
 //
@@ -10,33 +12,37 @@ import UIKit
 import CoreData
 
 class VTModel {
-    
+
+
+    // Creates new Pin object with given latitude and longitude, saves it to the model and returns it
+
     func createNewPin(lat:Double, long:Double) -> Pin  {
 
         let coreDataStack = getCoreDataStack()
         
-        // Create new pin
         let newPin = Pin(lat: lat,long: long,context: coreDataStack.context)
         
-        // Save the pin
         coreDataStack.save()
         
         return newPin
     }
+
+    // Loads new Photo objects for a given Pin. Note that this loads photo URLs from Flickr, creates and saves Photo objects, but does not load their image data. That is done by calling the loadImagesFor(::) method.
+    // Calls completionHandler when finished. error will be nil if there was no error, otherwise it will contain the error message.
     
     func loadNewPhotosFor(_ pin: Pin, completionHandler: @escaping (_ error: String?) -> Void) {
         
         let coreDataStack = getCoreDataStack()
         
-        // If we have more pages we can get, set to the next page
+        // If we have more pages of photos we can get from Flickr, increment to the next page
         if (pin.photosPageNum < pin.photosTotalPages) {
             pin.photosPageNum += 1
         } else {
-            // Otherwise set back to getting photos on page 1
+            // Otherwise set back to page 1
             pin.photosPageNum = 1
         }
 
-        // Get photo URLs from the network client class
+        // Get photo URLs from Flickr using our network client
         VTNetClient.sharedInstance().getPhotoURLs(lat: pin.latitude, long: pin.longitude, pageNumber: Int(pin.photosPageNum)) { (error,photoURLs,totalPages) in
             
             // If there was an error, pass the message to the controller
@@ -51,20 +57,18 @@ class VTModel {
             // Update the total number of pages
             pin.photosTotalPages = Int16(totalPages!)
             
+            // If there are photos in this area
             if photoURLs.count > 0 {
                 // Create model objects for each photo, and attach it to the pin
                 for photoURL in photoURLs {
                     let newPhoto = Photo(url: photoURL, context: coreDataStack.context)
                     newPhoto.pin = pin
-                    print("Added photoURL into Pin! \(photoURL)")
                 }
                 // Save the URLs
                 coreDataStack.save()
                 
+                // Return with no error
                 completionHandler(nil)
-            } else {
-                // TODO: Remove debug statement, do we need to do something if there are no photos?
-                print("No photos in this area")
             }
         }
     }
