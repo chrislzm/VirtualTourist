@@ -2,7 +2,7 @@
 //  VTNetConvenience.swift
 //  Virtual Tourist
 //
-//  Virtual Tourist Net Client convenience methods - Utilizes core VT net client methods to exchange information with Flickr over the network. Used as an interface to the network by the VTModel class.
+//  Virtual Tourist Net Client convenience methods - Utilizes core VT net client methods to exchange information with Flickr over the network. Used as an interface to the Flickr API by the VTModel class.
 //
 //  Created by Chris Leung on 4/27/17.
 //  Copyright © 2017 Chris Leung. All rights reserved.
@@ -82,7 +82,7 @@ extension VTNetClient {
                 photoURLs.append(photoURLString)
             }
             
-            /* 9: Success! Return the photo URLs to the completion handler */
+            /* 10: Success! Return the photo URLs to the completion handler */
             completionHandler(nil,photoURLs,pages)
         }
     }
@@ -92,9 +92,6 @@ extension VTNetClient {
 
         let errorString = error.userInfo[NSLocalizedDescriptionKey].debugDescription
 
-        // TODO: Remove debug statement
-        print(errorString)
-        
         if errorString.contains("timed out") {
             return "Couldn't reach server (timed out)"
         } else if errorString.contains("Status code returned: 403"){
