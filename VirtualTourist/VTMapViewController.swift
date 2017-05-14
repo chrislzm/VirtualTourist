@@ -100,8 +100,8 @@ class VTMapViewController: VTViewController, MKMapViewDelegate {
     
     override func didLoadFromNetwork(_ notification: Notification) {
         DispatchQueue.main.async {
+            super.didLoadFromNetwork(notification)
             if !self.downloadsActive {
-                super.didLoadFromNetwork(notification)
                 self.editButton.isEnabled = true
             }
         }
