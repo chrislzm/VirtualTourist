@@ -57,7 +57,7 @@ class VTCollectionViewController : VTViewController,UICollectionViewDelegate,UIC
             }
         
             // 4. Tell the model to download these photos' image data
-            VTModel.sharedInstance().loadImagesFor(newPhotos!) { (error) in
+            VTModel.sharedInstance().loadImagesFor(newPhotos) { (error) in
                 guard error == nil else {
                     self.displayErrorAlert(error)
                     return
