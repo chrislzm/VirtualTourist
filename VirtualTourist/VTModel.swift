@@ -58,7 +58,7 @@ class VTModel {
     
     // Calls completionHandler when finished. error parameter will be nil if there was no error, otherwise it will contain the error message. New photo objects will be contained in the newPhotos parameter.
     
-    func loadNewPhotosFor(_ pin: Pin, completionHandler: @escaping (_ newPhotos:[Photo]?, _ error: String?) -> Void) {
+    func loadNewPhotosFor(_ pin: Pin, completionHandler: @escaping (_ newPhotoObjectIDs:[NSManagedObjectID]?, _ error: String?) -> Void) {
 
         // If we have more pages of photos we can get from Flickr, increment to the next page
         if (pin.photosPageNum < pin.photosTotalPages) {
@@ -81,21 +81,25 @@ class VTModel {
             // If there was no error message, we can safely unwrap the URL
             let photoURLs = photoURLs!
             
-            // Update the total number of pages available in the Pin
-            pin.photosTotalPages = Int16(totalPages!)
-
-            var newPhotos:[Photo]? = nil
-
-            // If there are photos in this area
-            if photoURLs.count > 0 {
-                newPhotos = [Photo]()
-                for photoURL in photoURLs {
-                    newPhotos!.append(self.createNewPhoto(pin, photoURL))
-                }
+            // Update the total number of pages available in the Pin in the main queue, since that is the queue of the context it was created in
+            DispatchQueue.main.async {
+                pin.photosTotalPages = Int16(totalPages!)
                 
+                var newPhotosObjectIDs:[NSManagedObjectID]? = nil
+                
+                // If there are photos in this area
+                if photoURLs.count > 0 {
+                    newPhotosObjectIDs = [NSManagedObjectID]()
+                    for photoURL in photoURLs {
+                        
+                        // Create new photo and append it to the photos
+                        let newPhoto = self.createNewPhoto(pin, photoURL)
+                        newPhotosObjectIDs!.append(newPhoto.objectID)
+                    }
+                }
+                // Return photos if any, with no error
+                completionHandler(newPhotosObjectIDs,nil)
             }
-            // Return photos if any, with no error
-            completionHandler(newPhotos,nil)
         }
     }
     
@@ -103,26 +107,63 @@ class VTModel {
     
     // Calls completionHandler when finished. error parameter will be nil if there was no error, otherwise it will contain the error message.
     
-    func loadImagesFor(_ photos:[Photo]?, completionHandler: @escaping (_ error: String?) -> Void) {
+    func loadImagesFor(_ photosObjectIDs:[NSManagedObjectID]?, completionHandler: @escaping (_ error: String?) -> Void) {
         let coreDataStack = getCoreDataStack()
+        
         coreDataStack.performBackgroundBatchOperation { (context) in
             var error:String? = nil
             
             // Check first to make sure we have an array of photos
-            if let photosToLoad = photos {
-                for photo in photosToLoad {
-                    if photo.imageData == nil {
-                        let imageURL = URL(string: photo.url!)
-                        if let imageData = try? Data(contentsOf: imageURL!) {
-                            photo.imageData = imageData as NSData
-                        } else {
-                            error = "Was unable to download one or more photos"
+            guard let photosObjectsIDsToLoad = photosObjectIDs else {
+                error = "Error accessing photo information"
+                completionHandler(error)
+                return
+            }
+
+            print ("Starting the loading loop with \(photosObjectsIDsToLoad)")
+            
+            for photoObjectIDtoLoad in photosObjectsIDsToLoad {
+                
+                guard let photoToLoad = context.object(with: photoObjectIDtoLoad) as? Photo else {
+                    error = "Error accessing photo information"
+                    completionHandler(error)
+                    return
+                }
+                print("Found the object")
+                
+                if photoToLoad.imageData == nil {
+                    let imageURL = URL(string: photoToLoad.url!)
+                    print("Trying to load data")
+                    if let imageData = try? Data(contentsOf: imageURL!) {
+                        print("Got the data")
+                        photoToLoad.imageData = imageData as NSData
+                        do {
+                            try context.save()
+                        } catch {
+                            fatalError("Error saving image data")
                         }
+                        print("Saved successfully")
+                    } else {
+                        error = "Was unable to download one or more photos"
                     }
                 }
             }
             completionHandler(error)
         }
+    }
+    
+    // Same as method above, but takes Photo objects that were possibly created in another context/queue
+    
+    func loadImagesFor(_ photos:[Photo], completionHandler: @escaping (_ error: String?) -> Void) {
+        
+        var photoObjectIDs = [NSManagedObjectID]()
+        
+        // Extract Object IDs
+        for photo in photos {
+            photoObjectIDs.append(photo.objectID)
+        }
+        
+        loadImagesFor(photoObjectIDs, completionHandler: completionHandler)
     }
     
     // Returns all pins stored in persistent data
@@ -148,7 +189,7 @@ class VTModel {
             return nil
         }
     }
-
+   
     // Delete all photos in given array of photos from Core Data Stack
     
     func deleteAll(_ photos:[Photo]) {
