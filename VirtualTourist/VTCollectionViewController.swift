@@ -134,13 +134,13 @@ class VTCollectionViewController : VTViewController,UICollectionViewDelegate,UIC
         // Setup and add the Edit button
         editPhotosButton = UIBarButtonItem(title: "Edit", style: UIBarButtonItemStyle.plain, target:self, action: #selector(VTCollectionViewController.toggleEditingPhotos))
         navigationItem.rightBarButtonItem = editPhotosButton
-        
-        // Notifies controllers to disable user's ability to update the model until downloads complete
-        NotificationCenter.default.post(name: Notification.Name("willDownloadData"), object: nil)
 
         // If there are photos available at this location
         if pin!.photosTotalPages > 0 {
             
+            // Notifies controllers to disable user's ability to update the model until downloads complete
+            NotificationCenter.default.post(name: Notification.Name("willDownloadData"), object: nil)
+
             // Get a Fetch Results Controller containing this pin's photos
             fetchedResultsController = VTModel.sharedInstance().createFrcFor(pin!)
             fetchedResultsController?.delegate = self
@@ -162,6 +162,9 @@ class VTCollectionViewController : VTViewController,UICollectionViewDelegate,UIC
         } else {
             // Display message that there are no photos here
             noPhotosHereLabel.isHidden = false
+            
+            // Disable buttons for getting new photos, editing
+            disablePhotoButtons()
         }
     }
     
