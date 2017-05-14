@@ -139,6 +139,8 @@ class VTModel {
                         } catch {
                             fatalError("Error saving image data")
                         }
+                        // Now persist the image
+                        coreDataStack.save()
                     } else {
                         error = "Was unable to download one or more photos"
                     }
