@@ -12,12 +12,11 @@ import UIKit
 import MapKit
 import CoreData
 
-class VTMapViewController: UIViewController, MKMapViewDelegate {
+class VTMapViewController: VTViewController, MKMapViewDelegate {
 
     // MARK: Properties
     var selectedPin:Pin? // For temporarily storing pin when segueing
     var editingEnabled = false // When true, user can delete pins
-    var activeDownloads = 0 // Tracks number of active downloads, used to enable/disable editing
     
     // MARK: Outlets
     @IBOutlet weak var mapView: MKMapView!
@@ -45,7 +44,7 @@ class VTMapViewController: UIViewController, MKMapViewDelegate {
     // Handles adding a pin to the map (on long press)
     @IBAction func longPressOnMap(_ gestureRecognizer: UIGestureRecognizer) {
 
-        if gestureRecognizer.state == .began && !editingEnabled && activeDownloads == 0 {
+        if gestureRecognizer.state == .began && !editingEnabled && !downloadsActive {
 
             // Get the coordinates
             let touchPoint = gestureRecognizer.location(in: mapView)
@@ -62,7 +61,8 @@ class VTMapViewController: UIViewController, MKMapViewDelegate {
             // Save the pin into the annotation so we can use it later
             annotation.pin = newPin
 
-            willDownloadData()
+            // Notify controllers to disable user's ability to update the model until downloads complete
+            NotificationCenter.default.post(name: Notification.Name("willDownloadData"), object: nil)
 
             // Tell model to load photos for the newly created pin
             VTModel.sharedInstance().loadNewPhotosFor(newPin) { (newPhotos, error) in
@@ -78,7 +78,10 @@ class VTMapViewController: UIViewController, MKMapViewDelegate {
                         return
                     }
                     
-                    self.didDownloadData()
+                    // Done loading photo images. Notify controllers immediately.
+                    DispatchQueue.main.async {
+                        NotificationCenter.default.post(name: Notification.Name("didDownloadData"), object: nil)
+                    }
                 }
             }
         }
@@ -88,23 +91,17 @@ class VTMapViewController: UIViewController, MKMapViewDelegate {
     
     // These two methods prevent user from modifying the context while it's still being changed
     
-    func willDownloadData() {
-        activeDownloads += 1
-
-        // If we're the first download to begin, disable the edit button.
-        if activeDownloads == 1 {
-            DispatchQueue.main.async {
-                self.editButton.isEnabled = false
-            }
+    override func willLoadFromNetwork(_ notification: Notification) {
+        DispatchQueue.main.async {
+            super.willLoadFromNetwork(notification)
+            self.editButton.isEnabled = false
         }
     }
     
-    func didDownloadData() {
-        activeDownloads -= 1
-        
-        // If we're the last download to end, enable the edit button
-        if activeDownloads == 0 {
-            DispatchQueue.main.async {
+    override func didLoadFromNetwork(_ notification: Notification) {
+        DispatchQueue.main.async {
+            if !self.downloadsActive {
+                super.didLoadFromNetwork(notification)
                 self.editButton.isEnabled = true
             }
         }
