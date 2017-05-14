@@ -17,10 +17,12 @@ class VTMapViewController: UIViewController, MKMapViewDelegate {
     // MARK: Properties
     var selectedPin:Pin? // For temporarily storing pin when segueing
     var editingEnabled = false // When true, user can delete pins
+    var activeImageDownloads = 0 // Tracks number of active image downloads, used to enable/disable editing
     
     // MARK: Outlets
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var tapPinToDeleteLabel: UILabel!
+    @IBOutlet weak var editButton: UIBarButtonItem!
 
     // MARK: Actions
     
@@ -43,7 +45,7 @@ class VTMapViewController: UIViewController, MKMapViewDelegate {
     // Handles adding a pin to the map (on long press)
     @IBAction func longPressOnMap(_ gestureRecognizer: UIGestureRecognizer) {
 
-        if gestureRecognizer.state == .began {
+        if gestureRecognizer.state == .began && !editingEnabled && activeImageDownloads == 0 {
 
             // Get the coordinates
             let touchPoint = gestureRecognizer.location(in: mapView)
@@ -67,13 +69,41 @@ class VTMapViewController: UIViewController, MKMapViewDelegate {
                     return
                 }
                 
+                self.willDownloadImages()
+                
                 // Tell the model to start downloading these photos' image data
                 VTModel.sharedInstance().loadImagesFor(newPhotos!) { (error) in
                     guard error == nil else {
                         self.displayErrorAlert(error)
                         return
                     }
+                    
+                    self.didDownloadImages()
                 }
+            }
+        }
+    }
+    
+    // MARK: UI manipulation to prevent user from deleting pins while images are still downloading
+    
+    func willDownloadImages() {
+        activeImageDownloads += 1
+
+        // If we're the first download to begin, disable the edit button.
+        if activeImageDownloads == 1 {
+            DispatchQueue.main.async {
+                self.editButton.isEnabled = false
+            }
+        }
+    }
+    
+    func didDownloadImages() {
+        activeImageDownloads -= 1
+        
+        // If we're the last download to end, enable the edit button
+        if activeImageDownloads == 0 {
+            DispatchQueue.main.async {
+                self.editButton.isEnabled = true
             }
         }
     }

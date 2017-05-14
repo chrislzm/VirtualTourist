@@ -61,6 +61,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="editButton" destination="Zoe-hf-uly" id="lSn-Gx-QCN"/>
                         <outlet property="mapView" destination="mcP-3v-jvC" id="Saf-em-rco"/>
                         <outlet property="tapPinToDeleteLabel" destination="IBV-7V-z59" id="tzc-Ud-Qs3"/>
                         <segue destination="keC-km-QxW" kind="show" identifier="showPinCollection" id="z0c-kW-YIa"/>
