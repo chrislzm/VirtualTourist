@@ -83,17 +83,19 @@ class VTModel {
             
             // Update the total number of pages available in the Pin
             pin.photosTotalPages = Int16(totalPages!)
-            
+
+            var newPhotos:[Photo]? = nil
+
             // If there are photos in this area
             if photoURLs.count > 0 {
-                var newPhotos = [Photo]()
+                newPhotos = [Photo]()
                 for photoURL in photoURLs {
-                    newPhotos.append(self.createNewPhoto(pin, photoURL))
+                    newPhotos!.append(self.createNewPhoto(pin, photoURL))
                 }
                 
-                // Return photos
-                completionHandler(newPhotos,nil)
             }
+            // Return photos if any, with no error
+            completionHandler(newPhotos,nil)
         }
     }
     
@@ -101,17 +103,21 @@ class VTModel {
     
     // Calls completionHandler when finished. error parameter will be nil if there was no error, otherwise it will contain the error message.
     
-    func loadImagesFor(_ photos:[Photo], completionHandler: @escaping (_ error: String?) -> Void) {
+    func loadImagesFor(_ photos:[Photo]?, completionHandler: @escaping (_ error: String?) -> Void) {
         let coreDataStack = getCoreDataStack()
         coreDataStack.performBackgroundBatchOperation { (context) in
             var error:String? = nil
-            for photo in photos {
-                if photo.imageData == nil {
-                    let imageURL = URL(string: photo.url!)
-                    if let imageData = try? Data(contentsOf: imageURL!) {
-                        photo.imageData = imageData as NSData
-                    } else {
-                        error = "Was unable to download one or more photos"
+            
+            // Check first to make sure we have an array of photos
+            if let photosToLoad = photos {
+                for photo in photosToLoad {
+                    if photo.imageData == nil {
+                        let imageURL = URL(string: photo.url!)
+                        if let imageData = try? Data(contentsOf: imageURL!) {
+                            photo.imageData = imageData as NSData
+                        } else {
+                            error = "Was unable to download one or more photos"
+                        }
                     }
                 }
             }
