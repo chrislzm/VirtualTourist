@@ -27,9 +27,11 @@ extension UIViewController {
     
     // Displays a generic alert with a single OK button, takes a title and message as arguemnts
     
-    func displayAlertWithOKButton(_ title: String?, _ message: String?) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.alert)
-        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
-        present(alert, animated: true, completion: nil)
+    func displayErrorAlertOnMainQueue(_ error:String?) {
+        DispatchQueue.main.async {
+            let alert = UIAlertController(title: error, message: nil, preferredStyle: UIAlertControllerStyle.alert)
+            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+            self.present(alert, animated: true, completion: nil)
+        }
     }
 }
