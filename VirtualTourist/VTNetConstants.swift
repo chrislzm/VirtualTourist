@@ -1,10 +1,10 @@
 //
-//  OTMConstants.swift
-//  OnTheMap
+//  VTNetConstants.swift
+//  Virtual Tourist
 //
-//  Constants used in the OTMClient class
+//  Constants used in the Virtual Tourist network classes
 //
-//  Created by Chris Leung on 4/27/17.
+//  Created by Chris Leung on 5/11/17.
 //  Copyright © 2017 Chris Leung. All rights reserved.
 //
 
@@ -18,8 +18,10 @@ extension VTNetClient {
         static let ApiHost = "api.flickr.com"
         static let ApiPath = "/services/rest"
 
+        // The number of photos per page downloaded from Flickr and thus also the max number of cells displayed in Pin collections
         static let PhotosPerPage = 21
         
+        // Properties for bounding lat/long searches in Flickr
         static let SearchBBoxHalfWidth = 0.01 // 0.01 degrees is about 1KM
         static let SearchBBoxHalfHeight = 0.01 // 0.01 degrees is about 1KM
         static let SearchLatRange = (-90.0, 90.0)
