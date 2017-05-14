@@ -120,29 +120,25 @@ class VTModel {
                 return
             }
 
-            print ("Starting the loading loop with \(photosObjectsIDsToLoad)")
-            
             for photoObjectIDtoLoad in photosObjectsIDsToLoad {
                 
+                // Fetch the photo object
                 guard let photoToLoad = context.object(with: photoObjectIDtoLoad) as? Photo else {
                     error = "Error accessing photo information"
                     completionHandler(error)
                     return
                 }
-                print("Found the object")
                 
+                // Download the image data if we don't have it already
                 if photoToLoad.imageData == nil {
                     let imageURL = URL(string: photoToLoad.url!)
-                    print("Trying to load data")
                     if let imageData = try? Data(contentsOf: imageURL!) {
-                        print("Got the data")
                         photoToLoad.imageData = imageData as NSData
                         do {
                             try context.save()
                         } catch {
                             fatalError("Error saving image data")
                         }
-                        print("Saved successfully")
                     } else {
                         error = "Was unable to download one or more photos"
                     }
