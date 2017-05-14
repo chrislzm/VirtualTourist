@@ -23,7 +23,7 @@ class VTCollectionViewController : UIViewController,UICollectionViewDelegate,UIC
     
     // MARK: Properties for flow layout
     private let cellsPerRow:CGFloat = 3.0
-    private let cellsPerColumn:CGFloat = 5.0
+    private let cellsPerColumn:CGFloat = 6.0
     private let cellSpacing:CGFloat = 1.0
     private var cellWidthAndHeightForVerticalOrientation:CGFloat!
     private var cellWidthAndHeightForHorizontalOrientation:CGFloat!
@@ -177,6 +177,17 @@ class VTCollectionViewController : UIViewController,UICollectionViewDelegate,UIC
             // Else, the screen is oriented horizontally, and the "width" is actually the longer side
             cellWidthAndHeightForVerticalOrientation = (view.frame.size.height - (cellSpacing*(cellsPerRow-1))) / cellsPerRow
             cellWidthAndHeightForHorizontalOrientation = (view.frame.size.width - (cellSpacing*(cellsPerColumn-1))) / cellsPerColumn
+            setFlowLayoutForHorizontalOrientation()
+        }
+    }
+    
+    // On screen rotation, updates the flowLayout
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        
+        if size.height > size.width {
+            setFlowLayoutForVerticalOrientation()
+        } else {
             setFlowLayoutForHorizontalOrientation()
         }
     }
