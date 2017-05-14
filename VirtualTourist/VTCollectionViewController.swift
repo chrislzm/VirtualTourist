@@ -49,14 +49,12 @@ class VTCollectionViewController : VTViewController,UICollectionViewDelegate,UIC
         let photosToRemove = fetchedResultsController?.fetchedObjects as! [Photo]
         VTModel.sharedInstance().deleteAll(photosToRemove)
         
-        print("Loading new photos")
         // 3. Load new set of photos for our pin into the model
         VTModel.sharedInstance().loadNewPhotosFor(pin!) { (newPhotosObjectIDs, error) in
             guard error == nil else {
                 self.displayErrorAlert(error)
                 return
             }
-            print ("Downloading photo images")
         
             // 4. Tell the model to download these photos' image data
             VTModel.sharedInstance().loadImagesFor(newPhotosObjectIDs) { (error) in
@@ -64,7 +62,6 @@ class VTCollectionViewController : VTViewController,UICollectionViewDelegate,UIC
                     self.displayErrorAlert(error)
                     return
                 }
-                print ("Done downloading photo images")
                 
                 // 5. Now done loading photo images. Notify controllers immediately.
                 DispatchQueue.main.async {
