@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A5114ABF1EC806760090BABF /* VTViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5114ABE1EC806760090BABF /* VTViewController.swift */; };
 		A5432D611EC6B6100080E5D5 /* VTViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5432D601EC6B6100080E5D5 /* VTViewExtensions.swift */; };
 		A5432D631EC6B68F0080E5D5 /* VTControllerExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5432D621EC6B68F0080E5D5 /* VTControllerExtensions.swift */; };
 		A5E7BDC11EC4308B00C62CE0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E7BDC01EC4308B00C62CE0 /* AppDelegate.swift */; };
@@ -29,6 +30,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		A5114ABE1EC806760090BABF /* VTViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VTViewController.swift; sourceTree = "<group>"; };
 		A5432D601EC6B6100080E5D5 /* VTViewExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VTViewExtensions.swift; path = VirtualTourist/VTViewExtensions.swift; sourceTree = "<group>"; };
 		A5432D621EC6B68F0080E5D5 /* VTControllerExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VTControllerExtensions.swift; sourceTree = "<group>"; };
 		A5E7BDBD1EC4308B00C62CE0 /* VirtualTourist.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VirtualTourist.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -88,6 +90,7 @@
 				A5F1A1431EC568AF00A67848 /* VTCollectionViewController.swift */,
 				A5F1A1471EC583C300A67848 /* VTCollectionViewCell.swift */,
 				A5432D621EC6B68F0080E5D5 /* VTControllerExtensions.swift */,
+				A5114ABE1EC806760090BABF /* VTViewController.swift */,
 			);
 			name = Controller;
 			path = VirtualTourist;
@@ -208,6 +211,7 @@
 				A5F1A1421EC541CF00A67848 /* VTNetConvenience.swift in Sources */,
 				A5F1A1441EC568AF00A67848 /* VTCollectionViewController.swift in Sources */,
 				A5F1A1341EC522AE00A67848 /* Photo+CoreDataProperties.swift in Sources */,
+				A5114ABF1EC806760090BABF /* VTViewController.swift in Sources */,
 				A5E7BDD41EC4374C00C62CE0 /* Model.xcdatamodeld in Sources */,
 				A5F1A1381EC5393D00A67848 /* CoreDataStack.swift in Sources */,
 				A5F1A1481EC583C300A67848 /* VTCollectionViewCell.swift in Sources */,
