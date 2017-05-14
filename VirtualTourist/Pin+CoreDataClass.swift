@@ -2,6 +2,8 @@
 //  Pin+CoreDataClass.swift
 //  VirtualTourist
 //
+//  Managed object that implements Pin object for Virtual Tourist. Provides convenience initializer for storing properties.
+//
 //  Created by Chris Leung on 5/11/17.
 //  Copyright © 2017 Chris Leung. All rights reserved.
 //
