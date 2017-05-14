@@ -17,7 +17,7 @@ class VTMapViewController: UIViewController, MKMapViewDelegate {
     // MARK: Properties
     var selectedPin:Pin? // For temporarily storing pin when segueing
     var editingEnabled = false // When true, user can delete pins
-    var activeImageDownloads = 0 // Tracks number of active image downloads, used to enable/disable editing
+    var activeDownloads = 0 // Tracks number of active downloads, used to enable/disable editing
     
     // MARK: Outlets
     @IBOutlet weak var mapView: MKMapView!
@@ -62,14 +62,14 @@ class VTMapViewController: UIViewController, MKMapViewDelegate {
             // Save the pin into the annotation so we can use it later
             annotation.pin = newPin
 
+            willDownloadData()
+
             // Tell model to load photos for the newly created pin
             VTModel.sharedInstance().loadNewPhotosFor(newPin) { (newPhotos, error) in
                 guard error == nil else {
                     self.displayErrorAlert(error)
                     return
                 }
-                
-                self.willDownloadImages()
                 
                 // Tell the model to start downloading these photos' image data
                 VTModel.sharedInstance().loadImagesFor(newPhotos!) { (error) in
@@ -78,16 +78,18 @@ class VTMapViewController: UIViewController, MKMapViewDelegate {
                         return
                     }
                     
-                    self.didDownloadImages()
+                    didDownloadData()
                 }
             }
         }
     }
     
-    // MARK: UI manipulation to prevent user from deleting pins while images are still downloading
+    // MARK: UI Manipulation Methods
     
-    func willDownloadImages() {
-        activeImageDownloads += 1
+    // These two methods prevent user from modifying the context while it's still being changed
+    
+    func willDownloadData() {
+        activeDownloads += 1
 
         // If we're the first download to begin, disable the edit button.
         if activeImageDownloads == 1 {
@@ -97,8 +99,8 @@ class VTMapViewController: UIViewController, MKMapViewDelegate {
         }
     }
     
-    func didDownloadImages() {
-        activeImageDownloads -= 1
+    func didDownloadData() {
+        activeDownloads -= 1
         
         // If we're the last download to end, enable the edit button
         if activeImageDownloads == 0 {
