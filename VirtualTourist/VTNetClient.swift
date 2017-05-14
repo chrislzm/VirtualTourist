@@ -2,7 +2,7 @@
 //  VTNetClient.swift
 //  VirtualTourist
 //
-//  Core client methods for VT (Virtual Tourist)
+//  Core network client methods for VT (Virtual Tourist)
 //
 //  Created by Chris Leung on 5/11/17.
 //  Copyright © 2017 Chris Leung. All rights reserved.
@@ -32,6 +32,8 @@ class VTNetClient {
                 let userInfo = [NSLocalizedDescriptionKey : error]
                 completionHandler(nil, NSError(domain: "taskForHTTPMethod", code: 1, userInfo: userInfo))
             }
+
+            /* 3. Check for errors */
             
             /* GUARD: Was there an error? */
             guard (error == nil) else {
@@ -57,11 +59,11 @@ class VTNetClient {
                 return
             }
             
-            /* 4/5. Parse the data and use the data (happens in completion handler) */
+            /* 4. Parse the data and send it to completion handler */
             self.convertDataWithCompletionHandler(data, completionHandlerForConvertData: completionHandler)
         }
         
-        /* 6. Start the request */
+        /* 5. Start the request */
         task.resume()
         
         return task
@@ -88,6 +90,7 @@ class VTNetClient {
     }
     
     // Converts raw JSON into a usable Foundation object and sends it to a completion handler
+    
     private func convertDataWithCompletionHandler(_ data: Data, completionHandlerForConvertData: (_ result: AnyObject?, _ error: NSError?) -> Void) {
         
         var parsedResult: AnyObject! = nil
