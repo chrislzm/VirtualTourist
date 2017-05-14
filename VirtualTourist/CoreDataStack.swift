@@ -5,6 +5,10 @@
 //  Created by Fernando Rodríguez Romero on 21/02/16.
 //  Copyright © 2016 udacity.com. All rights reserved.
 //
+//  Modified by Chris Leung on 14/05/17
+//      - Check for changes in background context before saving it in batch operation
+//      - Fixed migration bug when adding store coordinator (parameters weren't being passed)
+//
 
 import CoreData
 
@@ -78,7 +82,7 @@ struct CoreDataStack {
     // MARK: Utils
     
     func addStoreCoordinator(_ storeType: String, configuration: String?, storeURL: URL, options : [NSObject:AnyObject]?) throws {
-        try coordinator.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: dbURL, options: nil)
+        try coordinator.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: configuration, at: dbURL, options: options)
     }
 }
 
@@ -108,10 +112,12 @@ extension CoreDataStack {
             
             // Save it to the parent context, so normal saving
             // can work
-            do {
-                try self.backgroundContext.save()
-            } catch {
-                fatalError("Error while saving backgroundContext: \(error)")
+            if self.backgroundContext.hasChanges {
+                do {
+                    try self.backgroundContext.save()
+                } catch {
+                    fatalError("Error while saving backgroundContext: \(error)")
+                }
             }
         }
     }
