@@ -198,14 +198,18 @@ class VTCollectionViewController : VTViewController,UICollectionViewDelegate,UIC
     // MARK: Notification Response Methods
     
     override func willLoadFromNetwork(_ notification: Notification) {
-        super.willLoadFromNetwork(notification)
-        
-        disablePhotoButtons()
+        DispatchQueue.main.async {
+            super.willLoadFromNetwork(notification)
+            self.disablePhotoButtons()
+        }
     }
     
     override func didLoadFromNetwork(_ notification: Notification) {
-        if !downloadsActive {
-            enablePhotoButtons()
+        DispatchQueue.main.async {
+            super.didLoadFromNetwork(notification)
+            if !self.downloadsActive {
+                self.enablePhotoButtons()
+            }
         }
     }
     
