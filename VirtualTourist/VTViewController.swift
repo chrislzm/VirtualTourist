@@ -2,7 +2,7 @@
 //  VTViewController.swift
 //  VirtualTourist
 //
-//  Implements shared methods used by the View Controllers to update the UI in order to prevent the user from modifying the data model while it's still being updated elsewhere. For example, images may still be downloading in the background context, so we don't want to allow the user to delete items, which would cause the context to save while it's in a possibly invalid state.
+//  Implements shared methods used by VT View Controllers to update the UI in order to prevent the user from modifying the data model while it's still being updated elsewhere. For example, images may still be downloading in the background context, so we don't want to allow the user to delete items, which would cause the context to save while it's in a possibly invalid state.
 //
 //  If subclasses use the willLoadFromNetwork and didLoadFromNetwork methods, they must call super. They can check the downloadsActive property to determine whether to enable or disable UI elements.
 //
