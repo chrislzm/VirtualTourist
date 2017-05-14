@@ -19,7 +19,7 @@ extension VTNetClient {
         static let ApiPath = "/services/rest"
 
         // The number of photos per page downloaded from Flickr and thus also the max number of cells displayed in Pin collections
-        static let PhotosPerPage = 21
+        static let PhotosPerPage = 18
         
         // Properties for bounding lat/long searches in Flickr
         static let SearchBBoxHalfWidth = 0.01 // 0.01 degrees is about 1KM
