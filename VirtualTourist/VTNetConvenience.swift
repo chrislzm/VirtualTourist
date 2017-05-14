@@ -1,8 +1,8 @@
 //
-//  OTMConvenience.swift
-//  OnTheMap
+//  VTNetConvenience.swift
+//  Virtual Tourist
 //
-//  OTM Client convenience methods - Utilizes OTM core client methods to exchange information with Facebook, Udacity and Parse over the network. Acts as an interface for the ViewController methods to the model.
+//  Virtual Tourist Net Client convenience methods - Utilizes core VT net client methods to exchange information with Flickr over the network. Used as an interface to the network by the VTModel class.
 //
 //  Created by Chris Leung on 4/27/17.
 //  Copyright © 2017 Chris Leung. All rights reserved.
@@ -13,7 +13,7 @@ import UIKit
 
 extension VTNetClient {
     
-    // Returns a list of Flickr photo URLs from this latitude and longitude, returning page 1 of results unless otherwise specified
+    // Returns a page of Flickr search results and total number of pages, given a latitude, longitude and page #
     func getPhotoURLs(lat:Double, long:Double, pageNumber:Int, completionHandler: @escaping (_ error: String?, _ photoURLs:[String]?, _ totalPages:Int?) -> Void) {
         
         /* 1. Set up parameters for Flickr REST API Method Call */
@@ -32,38 +32,37 @@ extension VTNetClient {
         /* 2. Run the method on the Flickr REST API */
         let _ = taskForHTTPMethod(apiParameters: methodParameters) { (results,httpError) in
             
-            /* 2. Check for error response */
+            /* 3. Check for error response */
             if let httpError = httpError {
                 completionHandler(self.getUserFriendlyErrorMessageFor(httpError),nil,nil)
                 return
             }
             
-            /* 3. Verify we received a reponse dictionary */
+            /* 4. Verify we received a reponse dictionary */
             guard let response = results as? [String:AnyObject] else {
                 completionHandler("Error creating session",nil,nil)
                 return
             }
             
-            /* 4: Verify Flickr status is ok */
+            /* 5: Verify Flickr status is ok */
             guard let stat = response[FlickrResponseKeys.Status] as? String, stat == FlickrResponseValues.OKStatus else {
                 completionHandler("Flickr API returned an error. See error code and message in \(response)",nil,nil)
                 return
             }
             
-            /* 5: Verify "photos" key is in our result */
+            /* 6: Verify "photos" key is in our result */
             guard let photosDictionary = response[FlickrResponseKeys.Photos] as? [String:AnyObject] else {
                 completionHandler("Cannot find keys '\(FlickrResponseKeys.Photos)' in \(response)",nil,nil)
                 return
             }
             
-            /* 6: Verify "pages" key is in photosDictionary */
+            /* 7: Verify "pages" key is in photosDictionary */
             guard let pages = photosDictionary[FlickrResponseKeys.Pages] as? Int else {
                 completionHandler("Cannot find key '\(FlickrResponseKeys.Pages)' in \(photosDictionary)",nil,nil)
                 return
             }
-            print("Pages: \(pages)")
             
-            /* 7: Verify "photo" key is in photosDictionary */
+            /* 8: Verify "photo" key is in photosDictionary */
             guard let photosArray = photosDictionary[FlickrResponseKeys.Photo] as? [[String: AnyObject]] else {
                 completionHandler("Cannot find key '\(FlickrResponseKeys.Photo)' in \(photosDictionary)",nil,nil)
                 return
@@ -73,12 +72,13 @@ extension VTNetClient {
             
             for photo in photosArray {
                 
-                /* 8: Does our photo have a key for the small image URL? */
+                /* 9: Verify "small image URL" key is in photo dictionary */
                 guard let photoURLString = photo[FlickrResponseKeys.SmallURL] as? String else {
                     completionHandler("Cannot find key '\(FlickrResponseKeys.SmallURL)' in \(photo)",nil,nil)
                     return
                 }
                 
+                /* 10: Append the URL to photoURLs */
                 photoURLs.append(photoURLString)
             }
             
@@ -87,7 +87,7 @@ extension VTNetClient {
         }
     }
 
-    // Handles NSErrors -- Turns them into user-friendly messages before sending them to the controller's completion handler
+    // Handles NSErrors -- Turns them into user-friendly messages before sending them to the completion handler
     private func getUserFriendlyErrorMessageFor(_ error:NSError) -> String {
 
         let errorString = error.userInfo[NSLocalizedDescriptionKey].debugDescription
@@ -108,16 +108,7 @@ extension VTNetClient {
         }
     }
     
-    // Substitute a key for the value that is contained within the string
-    private func substituteKey(_ string: String, key: String, value: String) -> String? {
-        if string.range(of: key) != nil {
-            return string.replacingOccurrences(of: key, with: value)
-        } else {
-            return nil
-        }
-    }
-    
-    // Create a bounding box string
+    // Create a bounding box string given a latitude and longitude
     private func bboxString(_ latitude:Double,_ longitude:Double) -> String {
         // ensure bbox is bounded by minimum and maximums
         let minimumLon = max(longitude - Constants.SearchBBoxHalfWidth, Constants.SearchLonRange.0)
