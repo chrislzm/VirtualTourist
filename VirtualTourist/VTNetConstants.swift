@@ -20,6 +20,8 @@ extension VTNetClient {
 
         // The number of photos per page downloaded from Flickr and thus also the max number of cells displayed in Pin collections
         static let PhotosPerPage = 18
+        // Flickr limits to 4000 photos total, so we will cap pages there
+        static let MaxPagesAvailable = 4000/PhotosPerPage
         
         // Properties for bounding lat/long searches in Flickr
         static let SearchBBoxHalfWidth = 0.01 // 0.01 degrees is about 1KM

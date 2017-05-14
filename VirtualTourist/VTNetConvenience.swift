@@ -57,10 +57,13 @@ extension VTNetClient {
             }
             
             /* 7: Verify "pages" key is in photosDictionary */
-            guard let pages = photosDictionary[FlickrResponseKeys.Pages] as? Int else {
+            guard var pages = photosDictionary[FlickrResponseKeys.Pages] as? Int else {
                 completionHandler("Cannot find key '\(FlickrResponseKeys.Pages)' in \(photosDictionary)",nil,nil)
                 return
             }
+            
+            // Limit pages if it exceeds the number of pages Flickr allows us to get
+            pages = pages > Constants.MaxPagesAvailable ? Constants.MaxPagesAvailable : pages
             
             /* 8: Verify "photo" key is in photosDictionary */
             guard let photosArray = photosDictionary[FlickrResponseKeys.Photo] as? [[String: AnyObject]] else {
