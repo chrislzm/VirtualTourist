@@ -97,7 +97,7 @@ class VTModel {
         }
     }
     
-    // Downloads image data from Flickr for a given set of Photo objects. Runs in the background. If the Photo object already has image data, it does not download it again. Saves the context every time a new image is downloaded.
+    // Downloads image data from Flickr for a given set of Photo objects. Runs in the background. If the Photo object already has image data, it does not download it again.
     
     // Calls completionHandler when finished. error parameter will be nil if there was no error, otherwise it will contain the error message.
     
@@ -110,7 +110,6 @@ class VTModel {
                     let imageURL = URL(string: photo.url!)
                     if let imageData = try? Data(contentsOf: imageURL!) {
                         photo.imageData = imageData as NSData
-                        coreDataStack.save()
                     } else {
                         error = "Was unable to download one or more photos"
                     }
