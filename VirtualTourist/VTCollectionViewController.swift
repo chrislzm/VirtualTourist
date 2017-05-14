@@ -50,25 +50,20 @@ class VTCollectionViewController : UIViewController,UICollectionViewDelegate,UIC
         VTModel.sharedInstance().deleteAll(photosToRemove)
         
         // 3. Load new set of photos for our pin into the model
-        VTModel.sharedInstance().loadNewPhotosFor(pin!) { (error) in
-            
+        VTModel.sharedInstance().loadNewPhotosFor(pin!) { (newPhotos, error) in
             guard error == nil else {
                 self.displayError(error)
                 return
             }
-            
-            // 4. Get the new photos from the model
-            let newPhotos = self.fetchedResultsController?.fetchedObjects as! [Photo]
-            
-            // 5. Tell the model to download these photos' image data
-            VTModel.sharedInstance().loadImagesFor(newPhotos) { (error) in
-                
+        
+            // 4. Tell the model to download these photos' image data
+            VTModel.sharedInstance().loadImagesFor(newPhotos!) { (error) in
                 guard error == nil else {
                     self.displayError(error)
                     return
                 }
                 
-                // 6. Now done loading photo images. Enable get photo/edit photos buttons.
+                // 5. Now done loading photo images. Enable get photo/edit photos buttons.
                 DispatchQueue.main.async {
                     self.enablePhotoButtons()
                 }
@@ -76,7 +71,7 @@ class VTCollectionViewController : UIViewController,UICollectionViewDelegate,UIC
         }
     }
 
-    // MARK: View Manipulation Methods 
+    // MARK: View Manipulation Methods
     
     func hideTapToRemovePhotoLabel() {
         tapPhotoToRemoveLabel.fadeOut()
