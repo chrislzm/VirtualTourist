@@ -25,7 +25,7 @@ extension UIView {
 
 extension UIViewController {
     
-    // Displays a generic alert with a single OK button, takes a title and message as arguements
+    // Displays a generic alert with a single OK button, takes a title and message as arguments
     func displayErrorAlert(_ error:String?) {
         DispatchQueue.main.async {
             let alert = UIAlertController(title: error, message: nil, preferredStyle: UIAlertControllerStyle.alert)
