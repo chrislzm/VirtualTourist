@@ -45,7 +45,7 @@ class VTMapViewController: UIViewController, MKMapViewDelegate {
     // Handles adding a pin to the map (on long press)
     @IBAction func longPressOnMap(_ gestureRecognizer: UIGestureRecognizer) {
 
-        if gestureRecognizer.state == .began && !editingEnabled && activeImageDownloads == 0 {
+        if gestureRecognizer.state == .began && !editingEnabled && activeDownloads == 0 {
 
             // Get the coordinates
             let touchPoint = gestureRecognizer.location(in: mapView)
@@ -78,7 +78,7 @@ class VTMapViewController: UIViewController, MKMapViewDelegate {
                         return
                     }
                     
-                    didDownloadData()
+                    self.didDownloadData()
                 }
             }
         }
@@ -92,7 +92,7 @@ class VTMapViewController: UIViewController, MKMapViewDelegate {
         activeDownloads += 1
 
         // If we're the first download to begin, disable the edit button.
-        if activeImageDownloads == 1 {
+        if activeDownloads == 1 {
             DispatchQueue.main.async {
                 self.editButton.isEnabled = false
             }
@@ -103,7 +103,7 @@ class VTMapViewController: UIViewController, MKMapViewDelegate {
         activeDownloads -= 1
         
         // If we're the last download to end, enable the edit button
-        if activeImageDownloads == 0 {
+        if activeDownloads == 0 {
             DispatchQueue.main.async {
                 self.editButton.isEnabled = true
             }
