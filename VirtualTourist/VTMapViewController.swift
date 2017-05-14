@@ -61,12 +61,18 @@ class VTMapViewController: UIViewController, MKMapViewDelegate {
             annotation.pin = newPin
 
             // Tell model to load photos for the newly created pin
-            VTModel.sharedInstance().loadNewPhotosFor(newPin) { (error) in
+            VTModel.sharedInstance().loadNewPhotosFor(newPin) { (newPhotos, error) in
                 guard error == nil else {
-                    DispatchQueue.main.async {
-                        self.displayAlertWithOKButton("Error retrieving photos from Flickr", error)
-                    }
+                    self.displayErrorAlert(error)
                     return
+                }
+                
+                // Tell the model to start downloading these photos' image data
+                VTModel.sharedInstance().loadImagesFor(newPhotos!) { (error) in
+                    guard error == nil else {
+                        self.displayErrorAlert(error)
+                        return
+                    }
                 }
             }
         }
