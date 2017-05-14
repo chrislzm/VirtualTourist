@@ -52,14 +52,14 @@ class VTCollectionViewController : UIViewController,UICollectionViewDelegate,UIC
         // 3. Load new set of photos for our pin into the model
         VTModel.sharedInstance().loadNewPhotosFor(pin!) { (newPhotos, error) in
             guard error == nil else {
-                self.displayError(error)
+                self.displayErrorAlert(error)
                 return
             }
         
             // 4. Tell the model to download these photos' image data
             VTModel.sharedInstance().loadImagesFor(newPhotos!) { (error) in
                 guard error == nil else {
-                    self.displayError(error)
+                    self.displayErrorAlert(error)
                     return
                 }
                 
@@ -148,7 +148,7 @@ class VTCollectionViewController : UIViewController,UICollectionViewDelegate,UIC
             if let photos = fetchedResultsController?.fetchedObjects as? [Photo] {
                 VTModel.sharedInstance().loadImagesFor(photos) { (error) in
                     guard error == nil else {
-                        self.displayError(error)
+                        self.displayErrorAlert(error)
                         return
                     }
                     DispatchQueue.main.async {
@@ -226,13 +226,7 @@ class VTCollectionViewController : UIViewController,UICollectionViewDelegate,UIC
     
 
     // MARK: Helper methods
-    
-    func displayError(_ error:String?) {
-        DispatchQueue.main.async {
-            self.displayAlertWithOKButton(error, nil)
-        }
-    }
-    
+
     func setFlowLayoutForVerticalOrientation() {
         if let _ = flowLayout {
             flowLayout.itemSize = CGSize(width: cellWidthAndHeightForVerticalOrientation, height: cellWidthAndHeightForVerticalOrientation)
