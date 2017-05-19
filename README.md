@@ -1,5 +1,5 @@
-"Virtual Tourist" - Flickr Explorer
-===================================
+"Virtual Tourist" Flickr Explorer
+=================================
 
 Programmed by Chris Leung
 
