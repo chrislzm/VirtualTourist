@@ -32,5 +32,5 @@ Developer Notes
 
 Questions & Issues
 ------------------
-* Create new issues on [GitHub repo](https://github.com/chrislzm/VirtualTourist) for any bugs found.
+* Create new issues on [GitHub repo](https://github.com/chrislzm/VirtualTourist/issues) for any bugs found.
 * Contact [Chris Leung](https://github.com/chrislzm)
