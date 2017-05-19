@@ -17,7 +17,8 @@ extension VTNetClient {
         static let ApiScheme = "https"
         static let ApiHost = "api.flickr.com"
         static let ApiPath = "/services/rest"
-
+        static let ApiKey = ""
+        
         // The number of photos per page downloaded from Flickr and thus also the max number of cells displayed in Pin collections
         static let PhotosPerPage = 18
         // Flickr limits to 4000 photos total, so we will cap pages there
@@ -49,11 +50,10 @@ extension VTNetClient {
     // MARK: Flickr Parameter Values
     struct FlickrParameterValues {
         static let SearchMethod = "flickr.photos.search"
-        static let ApiKey = "466ba576338b36037d63c2bd8286832e"
+        static let ApiKey = Constants.ApiKey
         static let ResponseFormat = "json"
         static let DisableJSONCallback = "1" /* 1 means "yes" */
         static let GalleryPhotosMethod = "flickr.galleries.getPhotos"
-        static let GalleryID = "5704-72157622566655097"
         static let SmallURL = "url_n"
         static let UseSafeSearch = "1"
         static let PhotosPerPage = Constants.PhotosPerPage
