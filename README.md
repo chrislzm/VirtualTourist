@@ -7,7 +7,7 @@ Programmed by Chris Leung
 Installation
 ------------
 1. Update Flickr API key (VTNetConstants.swift: VTNetClient.Constants.ApiKey)
-2. Compile and run.(Developed and tested with XCode 8+ and iOS 10+)
+2. Compile and run. (Developed and tested with XCode 8+ and iOS 10+)
 
 Optional Settings
 -----------------
